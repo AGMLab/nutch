@@ -35,6 +35,11 @@
   <property name="repo.maven.org"
     value="http://repo1.maven.org/maven2/"
     override="false"/>
+  
+  <property name="my.local.maven"
+    value="file:///home/muhammet/.m2/repository/"
+    override="false"/>
+  
   <property name="snapshot.apache.org"
     value="http://people.apache.org/repo/m2-snapshot-repository/"
     override="false"/>
@@ -48,6 +53,11 @@
   <resolvers>
     <ibiblio name="maven2"
       root="${repo.maven.org}"
+      pattern="${maven2.pattern.ext}"
+      m2compatible="true"
+      />
+    <ibiblio name="my.local.maven"
+      root="${my.local.maven}"
       pattern="${maven2.pattern.ext}"
       m2compatible="true"
       />
@@ -68,6 +78,7 @@
       />
      
     <chain name="default" dual="true">
+      <resolver ref="my.local.maven"/>
       <resolver ref="local"/>
       <resolver ref="maven2"/>
       <resolver ref="sonatype"/>
