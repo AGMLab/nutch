@@ -85,6 +85,7 @@ extends GoraReducer<UrlWithScore, NutchWritable, String, WebPage> {
     String url;
     try {
       url = TableUtil.unreverseUrl(keyUrl);
+      
     } catch (Exception e) {
       // this can happen because a newly discovered malformed link
       // may slip by url filters
@@ -197,7 +198,8 @@ extends GoraReducer<UrlWithScore, NutchWritable, String, WebPage> {
       Mark.UPDATEDB_MARK.putMark(page, parse_mark);
       Mark.PARSE_MARK.removeMark(page);
     }
-
+    
+    LOG.info("DB_UPDATE:Reducer url:"+url);
     context.write(keyUrl, page);
   }
 
