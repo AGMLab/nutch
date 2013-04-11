@@ -24,7 +24,6 @@ import org.apache.avro.Schema;
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Protocol;
 import org.apache.avro.util.Utf8;
-import org.apache.avro.ipc.AvroRemoteException;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.specific.SpecificExceptionBase;
 import org.apache.avro.specific.SpecificRecordBase;
