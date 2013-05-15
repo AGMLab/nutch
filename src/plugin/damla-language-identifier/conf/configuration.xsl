@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -15,32 +15,26 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<plugin
-   id="protocol-sftp"
-   name="Sftp Protocol Plug-in"
-   version="1.0.0"
-   provider-name="nutch.org">
-
-   <runtime>
-      <library name="protocol-sftp.jar">
-         <export name="*"/>
-      </library>
-      <library name="jsch-20081013.jar"/>
-   </runtime>
-
-   <requires>
-      <import plugin="nutch-extensionpoints"/>
-   </requires>
-
-   <extension id="org.apache.nutch.protocol.sftp"
-              name="SftpProtocol"
-              point="org.apache.nutch.protocol.Protocol">
-
-      <implementation id="org.apache.nutch.protocol.sftp.Sftp"
-                      class="org.apache.nutch.protocol.sftp.Sftp">
-        <parameter name="protocolName" value="sftp"/>
-      </implementation>
-      
-   </extension>
-
-</plugin>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:output method="html"/>
+<xsl:template match="configuration">
+<html>
+<body>
+<table border="1">
+<tr>
+ <td>name</td>
+ <td>value</td>
+ <td>description</td>
+</tr>
+<xsl:for-each select="property">
+<tr>
+  <td><a name="{name}"><xsl:value-of select="name"/></a></td>
+  <td><xsl:value-of select="value"/></td>
+  <td><xsl:value-of select="description"/></td>
+</tr>
+</xsl:for-each>
+</table>
+</body>
+</html>
+</xsl:template>
+</xsl:stylesheet>

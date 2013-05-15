@@ -75,8 +75,8 @@ public interface Nutch {
   public static final Utf8 ALL_CRAWL_ID = new Utf8(ALL_BATCH_ID_STR);
 
   public static final String CRAWL_ID_KEY = "storage.crawl.id";
-  
-  
+
+
   // short constants for cmd-line args
   /** Batch id to select. */
   public static final String ARG_BATCH = "batch";
@@ -110,7 +110,16 @@ public interface Nutch {
   public static final String ARG_CLASS = "class";
   /** Depth (number of cycles) of a crawl. */
   public static final String ARG_DEPTH = "depth";
-  
+  /** Job Type */
+  public static final String ARG_JOB_TYPE = "job";
+	// nutch jobs
+  public static final String ARG_JOB_INJECT = "inject";
+  public static final String ARG_JOB_GENERATE = "generate";
+  public static final String ARG_JOB_FETCH = "fetch";
+  public static final String ARG_JOB_PARSE = "parse";
+  public static final String ARG_JOB_DB_UPDATE = "update";
+  public static final String ARG_JOB_SOLR = "update";
+
   // short constants for status / results fields
   /** Status / result message. */
   public static final String STAT_MESSAGE = "msg";
@@ -122,4 +131,7 @@ public interface Nutch {
   public static final String STAT_JOBS = "jobs";
   /** Counters. */
   public static final String STAT_COUNTERS = "counters";
+
+
+
 }

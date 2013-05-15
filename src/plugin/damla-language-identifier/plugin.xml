@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin
+        id="damlaLanguageIdentifier"
+        name="Damla Language Identifier"
+        version="1.0.0"
+        provider-name="damla">
+
+    <runtime>
+        <library name="damla-language-identifier.jar">
+            <export name="*"/>
+        </library>
+        <library name="lang-id-1.0.1.jar"/>
+        <library name="smooth-core-1.0.0.jar"/>
+    </runtime>
+
+    <requires>
+        <import plugin="nutch-extensionpoints"/>
+    </requires>
+
+    <extension id="tr.damla.nutch.plugins.LanguageIndexer"
+               name="Damla Language identifier filter"
+               point="org.apache.nutch.indexer.IndexingFilter">
+
+        <implementation id="DamlaLanguageIndexer"
+                        class="tr.damla.nutch.plugins.LanguageIndexingFilter"/>
+    </extension>
+
+
+    <extension id="tr.damla.nutch.plugins.LanguageParser"
+               name="Damla language Parser"
+               point="org.apache.nutch.parse.ParseFilter">
+        <implementation id="DamlaLanguageParser"
+                        class="tr.damla.nutch.plugins.HTMLLanguageParseFilter"/>
+    </extension>
+</plugin>
