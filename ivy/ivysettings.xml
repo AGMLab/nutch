@@ -66,11 +66,16 @@
       pattern="${maven2.pattern.ext}"
       m2compatible="true"
       />
-     
+      <ibiblio name="ahmetaa"
+      root="https://raw.github.com/ahmetaa/maven-repo/master"
+      pattern="${maven2.pattern.ext}"
+      m2compatible="true" />
+
     <chain name="default" dual="true">
       <resolver ref="local"/>
       <resolver ref="maven2"/>
       <resolver ref="sonatype"/>
+      <resolver ref="ahmetaa"/>
     </chain>
     <chain name="internal">
       <resolver ref="local"/>
@@ -78,11 +83,13 @@
     <chain name="external">
       <resolver ref="maven2"/>
       <resolver ref="sonatype"/>
+      <resolver ref="ahmetaa"/>
     </chain>
     <chain name="external-and-snapshots">
       <resolver ref="maven2"/>
       <resolver ref="apache-snapshot"/>
       <resolver ref="sonatype"/>
+      <resolver ref="ahmetaa"/>
     </chain>
     <chain name="restletchain">
       <resolver ref="restlet"/>
