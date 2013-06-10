@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<project name="damla-language-identifier" default="jar-core">
+
+  <property file="build.properties" />  
+   <!-- <import file="${nutch.home}/src/plugin/build-plugin.xml" />-->
+   <import file="../build-plugin.xml"/> 
+</project>
