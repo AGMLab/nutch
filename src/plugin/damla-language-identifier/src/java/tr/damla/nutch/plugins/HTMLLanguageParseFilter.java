@@ -1,4 +1,3 @@
-
 package tr.damla.nutch.plugins;
 /**
  Canan GİRGİN 21.03.2013
@@ -11,6 +10,7 @@ import org.apache.avro.util.Utf8;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.nutch.metadata.Metadata;
 import org.apache.nutch.parse.HTMLMetaTags;
+import org.apache.nutch.parse.Outlink;
 import org.apache.nutch.parse.Parse;
 import org.apache.nutch.parse.ParseFilter;
 import org.apache.nutch.storage.WebPage;
@@ -35,31 +35,26 @@ public class HTMLLanguageParseFilter implements ParseFilter {
     public static final Logger LOG = LoggerFactory.getLogger(HTMLLanguageParseFilter.class);
 
     private static final Collection<Field> FIELDS = new HashSet<Field>();
+    public static final String DAMLA_LANG_ACCEPT_LANGUAGES = "damla.lang.accept.languages";
+    public static final String DAMLA_LANG_MODEL_GROUP = "damla.lang.modelGroup";
+    public static final String DAMLA_LANG_BLOCK_SIZE = "damla.lang.blockSize";
+    public static final String DAMLA_LANG_BLOCK_SAMPLE_SIZE = "damla.lang.blockSampleSize";
+    private String[] acceptLangs;
+    private String[] langModelGroup;
+    private int langBlockSize;
+    private int langBlockSampleSize;
 
-    private LanguageIdentifier landIdentifier;
+    private static LanguageIdentifier landIdentifier;
 
     private Configuration conf;
 
-    private boolean onlyCertain;
-
-    public HTMLLanguageParseFilter() {
-        try {
-            String[] langs = {"tr", "en"};
-            landIdentifier = LanguageIdentifier.generateFromCounts(langs);
-        } catch (IOException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.toString());
-            }
-        }
-    }
-
     public Parse filter(String url, WebPage page, Parse parse,
                         HTMLMetaTags metaTags, DocumentFragment doc) {
-        String lang = null;
+        String lang;
         lang = getLanguageFromMetadata(page);
         if (lang == null) {
             try {
-                lang = identifyLanguage(parse);
+                lang = identifyLanguage(parse, page);
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(e.toString());
@@ -79,18 +74,27 @@ public class HTMLLanguageParseFilter implements ParseFilter {
     /**
      * Use statistical language identification to extract page language
      */
-    private String identifyLanguage(Parse parse) throws IOException {
+    private String identifyLanguage(Parse parse, WebPage page) throws IOException {
         StringBuilder text = new StringBuilder();
         if (parse != null) {
             String title = parse.getTitle();
             if (title != null) {
-                text.append(title.toString());
+                text.append(title);
             }
             String content = parse.getText();
             if (content != null) {
-                text.append(" ").append(content.toString());
+                text.append(" ").append(content);
             }
-            return landIdentifier.identifyFull(text.toString());
+            for (String acceptLang : acceptLangs) {
+                if (getLanguageIdentifier().containsLanguage(text.toString(), acceptLang, langBlockSize, langBlockSampleSize)) {
+                    return acceptLang;
+                }
+            }
+            parse.setOutlinks(new Outlink[0]);
+            parse.setText("");
+            parse.setTitle("");
+            page.setContent(ByteBuffer.wrap(new byte[0]));
+            return "unk";
         }
         return null;
     }
@@ -107,8 +111,23 @@ public class HTMLLanguageParseFilter implements ParseFilter {
         return lang;
     }
 
-    public void setConf(Configuration conf) {
+    private LanguageIdentifier getLanguageIdentifier() throws IOException {
+        if (landIdentifier == null) {
+            landIdentifier = LanguageIdentifier.fromInternalModelGroup(langModelGroup[0]);
+        }
+        return landIdentifier;
+    }
 
+    public void setConf(Configuration conf) {
+        this.conf = conf;
+        acceptLangs = conf.getStrings(DAMLA_LANG_ACCEPT_LANGUAGES, "tr");
+        langModelGroup = conf.getStrings(DAMLA_LANG_MODEL_GROUP, "tr_group");
+        langBlockSize = conf.getInt(DAMLA_LANG_BLOCK_SIZE, 100);
+        langBlockSampleSize = conf.getInt(DAMLA_LANG_BLOCK_SAMPLE_SIZE, -1);
+        LOG.info("acceptLang=" + acceptLangs);
+        LOG.info("langModelGroup=" + langModelGroup);
+        LOG.info("langBlockSize=" + langBlockSize);
+        LOG.info("langBlockSampleSize=" + langBlockSampleSize);
     }
 
     public Configuration getConf() {

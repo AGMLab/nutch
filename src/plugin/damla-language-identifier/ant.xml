@@ -2,76 +2,74 @@
 
 <project name="run-plugin">
 
-  <property file="build.properties" />
- 
-  <target name="compile-nutch">
-    <presetdef name="javac">
-      <javac includeantruntime="false" />
-    </presetdef>
-    
-    <ant antfile="${nutch.home}/build.xml" target="runtime" dir="${nutch.home}" />
-  </target>
+    <property file="build.properties"/>
 
-  <target name="compile-plugin">
-    <exec executable="mvn" dir="${basedir}">
-      <arg value="clean"/>
-      <arg value="compile"/>
-      <arg value="jar:jar"/>
-      <arg value="dependency:copy-dependencies"/>
-    </exec>
+    <target name="compile-nutch">
+        <presetdef name="javac">
+            <javac includeantruntime="false"/>
+        </presetdef>
 
+        <ant antfile="${nutch.home}/build.xml" target="runtime" dir="${nutch.home}"/>
+    </target>
 
-
-    <property name="pluginTarget" value="${nutch.home}/runtime/local/plugins/damla-language-identifier" />
-    
-    <mkdir dir="${pluginTarget}" />
-    <copy file="plugin.xml" todir="${pluginTarget}" />
-    <copy file="target/damla-language-identifier.jar" todir="${pluginTarget}" />
-  </target>
-
-  <target name="run">
-    <exec executable="java" dir="${nutch.home}/runtime/local">
-      <arg value="-cp"/>
-      <arg value="${basedir}/conf:lib/*:${basedir}/target/dependency/*"/>
-      <arg value="org.apache.nutch.crawl.Crawler"/>
-      <arg value="${crawl.seedDirectory}"/>
-    </exec>
-  </target>
-
-  <target name="before-debug">
-    <exec executable="java" dir="${nutch.home}/runtime/local">
-      <arg value="-Xdebug"/>
-      <arg value="-Xrunjdwp:server=y,transport=dt_socket,address=5005,suspend=y"/>  
-      <arg value="-cp"/>
-      <arg value="${basedir}/conf:lib/*:${basedir}/target/dependency/*"/>
-      <arg value="org.apache.nutch.crawl.Crawler"/>
-      <arg value="seed"/>
-    </exec>
-  </target>
-
-  <target name="debug-index">
-    <exec executable="java" dir="${nutch.home}/runtime/local">
-      <arg value="-Xdebug"/>
-      <arg value="-Xrunjdwp:server=y,transport=dt_socket,address=5005,suspend=y"/>
-      <arg value="-cp"/>
-      <arg value="${basedir}/conf:lib/*:${basedir}/target/dependency/*"/>
-      <arg value="org.apache.nutch.indexer.solr.SolrIndexerJob"/>
-      <arg value="http://localhost:8983/solr/" />
-      <arg value="-all" />
-    </exec>
-  </target>
+    <target name="compile-plugin">
+        <exec executable="mvn" dir="${basedir}">
+            <arg value="clean"/>
+            <arg value="compile"/>
+            <arg value="jar:jar"/>
+            <arg value="dependency:copy-dependencies"/>
+        </exec>
 
 
+        <property name="pluginTarget" value="${nutch.home}/runtime/local/plugins/damla-language-identifier"/>
 
-  <target name="run-index">
-    <exec executable="java" dir="${nutch.home}/runtime/local">
-      <arg value="-cp"/>
-      <arg value="${basedir}/conf:lib/*:${basedir}/target/dependency/*"/>
-      <arg value="org.apache.nutch.indexer.solr.SolrIndexerJob"/>
-      <arg value="http://localhost:8983/solr/" />
-      <arg value="-all" />
-    </exec>
-  </target>
+        <mkdir dir="${pluginTarget}"/>
+        <copy file="plugin.xml" todir="${pluginTarget}"/>
+        <copy file="target/damla-language-identifier.jar" todir="${pluginTarget}"/>
+    </target>
+
+    <target name="run">
+        <exec executable="java" dir="${nutch.home}/runtime/local">
+            <arg value="-cp"/>
+            <arg value="${basedir}/conf:lib/*:${basedir}/target/dependency/*"/>
+            <arg value="org.apache.nutch.crawl.Crawler"/>
+            <arg value="${crawl.seedDirectory}"/>
+        </exec>
+    </target>
+
+    <target name="before-debug">
+        <exec executable="java" dir="${nutch.home}/runtime/local">
+            <arg value="-Xdebug"/>
+            <arg value="-Xrunjdwp:server=y,transport=dt_socket,address=5005,suspend=y"/>
+            <arg value="-cp"/>
+            <arg value="${basedir}/conf:lib/*:${basedir}/target/dependency/*"/>
+            <arg value="org.apache.nutch.crawl.Crawler"/>
+            <arg value="seed"/>
+        </exec>
+    </target>
+
+    <target name="debug-index">
+        <exec executable="java" dir="${nutch.home}/runtime/local">
+            <arg value="-Xdebug"/>
+            <arg value="-Xrunjdwp:server=y,transport=dt_socket,address=5005,suspend=y"/>
+            <arg value="-cp"/>
+            <arg value="${basedir}/conf:lib/*:${basedir}/target/dependency/*"/>
+            <arg value="org.apache.nutch.indexer.solr.SolrIndexerJob"/>
+            <arg value="http://localhost:8983/solr/"/>
+            <arg value="-all"/>
+        </exec>
+    </target>
+
+
+    <target name="run-index">
+        <exec executable="java" dir="${nutch.home}/runtime/local">
+            <arg value="-cp"/>
+            <arg value="${basedir}/conf:lib/*:${basedir}/target/dependency/*"/>
+            <arg value="org.apache.nutch.indexer.solr.SolrIndexerJob"/>
+            <arg value="http://localhost:8983/solr/"/>
+            <arg value="-all"/>
+        </exec>
+    </target>
 
     <target name="debug-parse">
         <exec executable="java" dir="${nutch.home}/runtime/local">
@@ -80,7 +78,7 @@
             <arg value="-cp"/>
             <arg value="${basedir}/conf:lib/*:${basedir}/target/dependency/*"/>
             <arg value="org.apache.nutch.parse.ParserJob"/>
-            <arg value="-all" />
+            <arg value="-all"/>
         </exec>
     </target>
 

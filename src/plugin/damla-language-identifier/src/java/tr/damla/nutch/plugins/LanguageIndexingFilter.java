@@ -17,7 +17,7 @@ import java.util.HashSet;
 /**
  * An {@link tr.damla.nutch.plugins.LanguageIndexingFilter} that adds a
  * <code>lang</code> (language) field to the document.
- *
+ * <p/>
  * It tries to find the language of the document by checking
  * if {@link HTMLLanguageParseFilter} has added some language
  * information
@@ -26,49 +26,50 @@ import java.util.HashSet;
  */
 public class LanguageIndexingFilter implements IndexingFilter {
 
-  private Configuration conf;
+    private Configuration conf;
 
-  private static final Collection<Field> FIELDS = new HashSet<Field>();
+    private static final Collection<Field> FIELDS = new HashSet<Field>();
 
-  static {
-    FIELDS.add(Field.METADATA);
-  }
-
-  /**
-   * Constructs a new Language Indexing Filter.
-   */
-  public LanguageIndexingFilter() {}
-
-  public NutchDocument filter(NutchDocument doc, String url, WebPage page)
-      throws IndexingException {
-
-    // check if LANGUAGE found, possibly put there by HTMLLanguageParser
-    String lang = null;
-    ByteBuffer blang = page.getFromMetadata(new Utf8(Metadata.LANGUAGE));
-    if (blang != null) {
-      lang = Bytes.toString(blang.array());
+    static {
+        FIELDS.add(Field.METADATA);
     }
-    if (lang == null || lang.length() == 0) {
-      lang = "unknown";
+
+    /**
+     * Constructs a new Language Indexing Filter.
+     */
+    public LanguageIndexingFilter() {
     }
-    doc.add("lang", lang);
 
-    return doc;
-  }
+    public NutchDocument filter(NutchDocument doc, String url, WebPage page)
+            throws IndexingException {
 
-  public Collection<Field> getFields() {
-    return FIELDS;
-  }
+        // check if LANGUAGE found, possibly put there by HTMLLanguageParser
+        String lang = null;
+        ByteBuffer blang = page.getFromMetadata(new Utf8(Metadata.LANGUAGE));
+        if (blang != null) {
+            lang = Bytes.toString(blang.array());
+        }
+        if (lang == null || lang.length() == 0) {
+            lang = "unknown";
+        }
+        doc.add("lang", lang);
 
-  public void addIndexBackendOptions(Configuration conf) {
-  }
+        return doc;
+    }
 
-  public void setConf(Configuration conf) {
-    this.conf = conf;
-  }
+    public Collection<Field> getFields() {
+        return FIELDS;
+    }
 
-  public Configuration getConf() {
-    return this.conf;
-  }
+    public void addIndexBackendOptions(Configuration conf) {
+    }
+
+    public void setConf(Configuration conf) {
+        this.conf = conf;
+    }
+
+    public Configuration getConf() {
+        return this.conf;
+    }
 
 }

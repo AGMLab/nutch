@@ -57,8 +57,18 @@ Pluginin nutch üzerinde aktif olabilmesi için:
 
 5.conf altındaki nutch-site.xml dosyasında "plugin.includes" property'sinde tanımlanan pluginlerin en sonuna "|damlaLanguageIdentifier" eklenir.
 
-6. ant projesi derlenir.
+6. src/plugin/damla-language-identifier/src klasöründe "ln -s main/java/" komutu çalıştırılır.
+
+7.pluginin build.xml dosyasındaki komutlu satır açılır, diğeri kapatılır.
+  <!-- <import file="${nutch.home}/src/plugin/build-plugin.xml" />   -->
+  <import file="../build-plugin.xml"/>
+
+8. ant projesi derlenir.
+
+9. sonuçları denemek için nutch/runtime/local içerisinden bin/nutch parsechecker http://www.mynet.com
+
 *******************************************************************
+
 DEBUG:
 
 Plugini debug edebilmek için:
@@ -68,6 +78,9 @@ Plugini debug edebilmek için:
 
 3. conf altındaki nutch-site.xml dosyasında "plugin.includes" property'sinde tanımlanan pluginlerin en sonuna "|damlaLanguageIdentifier" eklenir.
 
+4. pluginin build.xml dosyasındaki komutlu satır açılır, diğeri kapatılır.
+     <import file="${nutch.home}/src/plugin/build-plugin.xml" />
+    <!--<import file="../build-plugin.xml"/> -->
 4. Ant menüsünden "compile-nutch" çalıştırılır.
 
 5. Ant menüsünden "compile-plugin" çalıştırılır.
@@ -79,4 +92,3 @@ Plugini debug edebilmek için:
 TODO:
 
 Hangi dillerin bulunacağı config dosyasından okunacak şekle getirilmeli.
-
