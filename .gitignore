@@ -5,3 +5,5 @@ conf/slaves
 build/
 runtime/
 logs/
+*.iml
+*.out
