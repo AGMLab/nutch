@@ -29,12 +29,15 @@ public class LinkRankGiraphJob implements Tool {
 
     LOG.info("Starting LinkRank Giraph Job");
     Configuration config = HBaseConfiguration.create();
-    //config.clear();
+    /*
+    // below are required if Nutch runs in local mode.
+    // but not required when run via deploy/bin/nutch.
+    config.clear();
     config.set("hbase.zookeeper.quorum", "localhost");
     config.set("hbase.zookeeper.property.clientPort", "2181");
     config.set("hbase.master", "localhost:60000");
     config.set("mapred.job.tracker", "localhost:9001");
-
+    */
 
     HBaseAdmin admin = new HBaseAdmin(config);
     ZooKeeperWatcher zooKeeperWatcher = new ZooKeeperWatcher(config, "zkw", new Abortable() {
