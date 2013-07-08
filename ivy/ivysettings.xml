@@ -29,6 +29,9 @@
           http://ibiblio.lsu.edu/main/pub/packages/maven2
           http://www.ibiblio.net/pub/packages/maven2
   -->
+  <property name="my.local.maven"
+    value="file:///{{user.home}}/.m2/repository/"
+    override="false"/>    
   <property name="oss.sonatype.org" 
     value="http://oss.sonatype.org/content/repositories/releases/" 
     override="false"/>
@@ -51,6 +54,11 @@
       pattern="${maven2.pattern.ext}"
       m2compatible="true"
       />
+    <ibiblio name="my.local.maven"
+      root="${my.local.maven}"
+      pattern="${maven2.pattern.ext}"
+      m2compatible="true"
+      />
     <ibiblio name="apache-snapshot"
       root="${snapshot.apache.org}"
       pattern="${maven2.pattern.ext}"
@@ -68,6 +76,7 @@
       />
      
     <chain name="default" dual="true">
+      <resolver ref="my.local.maven"/>
       <resolver ref="local"/>
       <resolver ref="maven2"/>
       <resolver ref="sonatype"/>
