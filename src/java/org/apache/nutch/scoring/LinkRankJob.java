@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,18 +35,12 @@ import java.util.Map;
 public class LinkRankJob {
 
   public static final Logger LOG = LoggerFactory.getLogger(LinkRankJob.class);
-  private Configuration conf;
-
   public LinkRankJob() {
-    LOG.info("constructor started");
     Map<String, Object> args = null;
     try {
-      LOG.info("running arg");
       run(args);
     } catch (Exception e) {
-      LOG.info("exception");
-      LOG.info(e.getMessage());
-      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+      e.printStackTrace();
     }
   }
 
@@ -57,7 +51,7 @@ public class LinkRankJob {
     LOG.info("LinkRank has finished...");
     return null;
   }
-  
+
   private int updateTable() throws Exception {
     LOG.info("ScoreUpdaterJob: starting");
     run(ToolUtil.toArgMap(Nutch.ARG_CRAWL, 0));
@@ -70,7 +64,8 @@ public class LinkRankJob {
   }
 
   public static void main(String[] args) throws Exception {
-    //int res = ToolRunner.run(NutchConfiguration.create(), new ScoreUpdaterJob(), args);
+    //int res = ToolRunner.run(NutchConfiguration.create(),
+    // new ScoreUpdaterJob(), args);
     new LinkRankJob();
 
   }

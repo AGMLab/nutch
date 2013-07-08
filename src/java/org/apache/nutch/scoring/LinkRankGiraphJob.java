@@ -21,13 +21,14 @@ import org.apache.log4j.Logger;
 public class LinkRankGiraphJob implements Tool {
   private static final Logger LOG = Logger.getLogger(LinkRankGiraphJob.class);
   private GiraphConfiguration conf;
-  private static final String INPUT_TABLE_NAME = "webpage";
-  private static final String OUTPUT_TABLE_NAME = "webpage";
+  private String INPUT_TABLE_NAME = "webpage";
+  private String OUTPUT_TABLE_NAME = "webpage";
 
   @Override
   public int run(String[] strings) throws Exception {
 
     LOG.info("Starting LinkRank Giraph Job");
+
     Configuration config = HBaseConfiguration.create();
     /*
     // below are required if Nutch runs in local mode.
