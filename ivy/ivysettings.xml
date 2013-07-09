@@ -30,8 +30,8 @@
           http://www.ibiblio.net/pub/packages/maven2
   -->
   <property name="my.local.maven"
-    value="file:///{{user.home}}/.m2/repository/"
-    override="false"/>    
+    value="file:///${user.home}/.m2/repository/"
+    override="true"/>    
   <property name="oss.sonatype.org" 
     value="http://oss.sonatype.org/content/repositories/releases/" 
     override="false"/>
