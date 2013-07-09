@@ -16,6 +16,9 @@ import org.apache.hadoop.hbase.mapreduce.TableOutputFormat;
 import org.apache.hadoop.hbase.zookeeper.ZooKeeperWatcher;
 import org.apache.hadoop.util.Tool;
 import org.apache.log4j.Logger;
+import org.apache.nutch.api.ConfResource;
+import org.apache.nutch.api.DbReader;
+import org.apache.nutch.api.NutchApp;
 
 
 public class LinkRankGiraphJob implements Tool {
@@ -39,6 +42,17 @@ public class LinkRankGiraphJob implements Tool {
     config.set("hbase.master", "localhost:60000");
     config.set("mapred.job.tracker", "localhost:9001");
     */
+
+    //LOG.info("TABLE:" + getConf().get("storage.schema.webpage"));
+    String confId = ConfResource.DEFAULT_CONF;
+    Configuration nutchConf = NutchApp.confMgr.get(confId);
+    INPUT_TABLE_NAME = nutchConf.get("storage.schema.webpage");
+    OUTPUT_TABLE_NAME = INPUT_TABLE_NAME;
+
+    LOG.info("Using HBase table of Nutch: " + INPUT_TABLE_NAME);
+
+
+    //OUTPUT_TABLE_NAME = INPUT_TABLE_NAME;
 
     HBaseAdmin admin = new HBaseAdmin(config);
     ZooKeeperWatcher zooKeeperWatcher = new ZooKeeperWatcher(config, "zkw", new Abortable() {
