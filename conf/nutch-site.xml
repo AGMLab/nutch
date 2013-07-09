@@ -17,4 +17,23 @@
 		<name>plugin.folders</name>
 		<value>/home/gyhot/Projects/github/apache-nutch/build/plugins</value>
 	</property>
+    <property>
+        <name>http.accept.language</name>
+        <value>tr-tr, en-us,en-gb,en;q=0.7,*;q=0.3</value>
+        <description>Value of the “Accept-Language” request header field.
+            This allows selecting non-English language as default one to retrieve.
+            It is a useful setting for search engines build for certain national group.
+        </description>
+    </property>
+    <property>
+        <name>parser.character.encoding.default</name>
+        <value>utf-8</value>
+        <description>The character encoding to fall back to when no other information
+            is available</description>
+    </property>
+
+    <property>
+        <name>plugin.includes</name>
+        <value>protocol-http|protocol-httpclient|urlfilter-regex|parse-(html|tika)|index-(basic|anchor)|urlnormalizer-(pass|regex|basic)|scoring-opic|damlaLanguageIdentifier</value>
+    </property>
 </configuration>
