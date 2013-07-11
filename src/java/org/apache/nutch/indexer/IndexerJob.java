@@ -56,6 +56,7 @@ public abstract class IndexerJob extends NutchTool implements Tool {
     FIELDS.add(WebPage.Field.PARSE_STATUS);
     FIELDS.add(WebPage.Field.SCORE);
     FIELDS.add(WebPage.Field.MARKERS);
+    FIELDS.add(WebPage.Field.LINKRANK);
   }
   
   public static class IndexerMapper
@@ -116,6 +117,7 @@ public abstract class IndexerJob extends NutchTool implements Tool {
   private static Collection<WebPage.Field> getFields(Job job) {
     Configuration conf = job.getConfiguration();
     Collection<WebPage.Field> columns = new HashSet<WebPage.Field>(FIELDS);
+    LOG.info("IndexerJob fields:" + FIELDS);
     IndexingFilters filters = new IndexingFilters(conf);
     columns.addAll(filters.getFields());
     ScoringFilters scoringFilters = new ScoringFilters(conf);
@@ -132,6 +134,7 @@ public abstract class IndexerJob extends NutchTool implements Tool {
         StringComparator.class, RawComparator.class);
 
     Collection<WebPage.Field> fields = getFields(job);
+    LOG.info("Fields to create index job: " + fields);
     StorageUtils.initMapperJob(job, fields, String.class, NutchDocument.class,
         IndexerMapper.class);
     job.setNumReduceTasks(0);

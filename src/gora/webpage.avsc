@@ -41,6 +41,7 @@
         {"name": "outlinks", "type": {"type": "map", "values": "string"}},
         {"name": "inlinks", "type": {"type": "map", "values": "string"}},
         {"name": "markers", "type": {"type": "map", "values": "string"}},
-        {"name": "metadata", "type": {"type": "map", "values": "bytes"}}
+        {"name": "metadata", "type": {"type": "map", "values": "bytes"}},
+        {"name": "linkrank", "type": "double"}
    ]
 }

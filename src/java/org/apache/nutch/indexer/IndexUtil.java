@@ -83,6 +83,10 @@ public class IndexUtil {
     // store boost for use by explain and dedup
     doc.add("boost", Float.toString(boost));
 
+    // Index LinkRank Score.
+    double linkRankScore = page.getLinkRank();
+    doc.add("linkrank", Double.toString(linkRankScore));
+
     return doc;
   }
   

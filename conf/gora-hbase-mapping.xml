@@ -51,6 +51,7 @@
         
         <!-- score fields                                       -->
         <field name="score" family="s" qualifier="s"/>
+        <field name="linkrank" family="s" qualifier="linkrank"/>
         <field name="headers" family="h"/>
         <field name="inlinks" family="il"/>
         <field name="outlinks" family="ol"/>
