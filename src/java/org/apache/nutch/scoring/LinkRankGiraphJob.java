@@ -4,6 +4,7 @@ import org.apache.giraph.conf.GiraphConfiguration;
 import org.apache.giraph.edge.ByteArrayEdges;
 import org.apache.giraph.examples.LinkRank.LinkRankComputation;
 import org.apache.giraph.examples.LinkRank.LinkRankVertexMasterCompute;
+import org.apache.giraph.examples.LinkRank.LinkRankVertexWorkerContext;
 import org.apache.giraph.examples.LinkRank.NutchTableEdgeInputFormat;
 import org.apache.giraph.examples.LinkRank.NutchTableEdgeOutputFormat;
 import org.apache.giraph.job.GiraphJob;
@@ -22,16 +23,32 @@ import org.apache.nutch.api.NutchApp;
 
 
 public class LinkRankGiraphJob implements Tool {
-  private static final Logger LOG = Logger.getLogger(LinkRankGiraphJob.class);
+  private Logger LOG = Logger.getLogger(getClass());
   private GiraphConfiguration conf;
   private String INPUT_TABLE_NAME = "webpage";
   private String OUTPUT_TABLE_NAME = "webpage";
+  private String QUALIFIER = "linkrank";
+
+  public void setup() {
+    String confId = ConfResource.DEFAULT_CONF;
+    Configuration nutchConf = NutchApp.confMgr.get(confId);
+    if (getClass() == LinkRankGiraphJob.class){
+      INPUT_TABLE_NAME = nutchConf.get("storage.schema.webpage");
+      OUTPUT_TABLE_NAME = nutchConf.get("storage.schema.webpage");
+      QUALIFIER = "linkrank";
+    } else {
+      INPUT_TABLE_NAME = nutchConf.get("storage.schema.host");
+      OUTPUT_TABLE_NAME = "hostrank";
+      QUALIFIER = "hostrank";
+    }
+    LOG.info("Using HBase table of Nutch: " + INPUT_TABLE_NAME);
+  }
 
   @Override
   public int run(String[] strings) throws Exception {
 
-    LOG.info("Starting LinkRank Giraph Job");
-
+    LOG.info("Starting " + getClass().getName());
+    setup();
     Configuration config = HBaseConfiguration.create();
     /*
     // below are required if Nutch runs in local mode.
@@ -42,17 +59,6 @@ public class LinkRankGiraphJob implements Tool {
     config.set("hbase.master", "localhost:60000");
     config.set("mapred.job.tracker", "localhost:9001");
     */
-
-    //LOG.info("TABLE:" + getConf().get("storage.schema.webpage"));
-    String confId = ConfResource.DEFAULT_CONF;
-    Configuration nutchConf = NutchApp.confMgr.get(confId);
-    INPUT_TABLE_NAME = nutchConf.get("storage.schema.webpage");
-    OUTPUT_TABLE_NAME = INPUT_TABLE_NAME;
-
-    LOG.info("Using HBase table of Nutch: " + INPUT_TABLE_NAME);
-
-
-    //OUTPUT_TABLE_NAME = INPUT_TABLE_NAME;
 
     HBaseAdmin admin = new HBaseAdmin(config);
     ZooKeeperWatcher zooKeeperWatcher = new ZooKeeperWatcher(config, "zkw", new Abortable() {
@@ -70,14 +76,20 @@ public class LinkRankGiraphJob implements Tool {
     giraphConf.setComputationClass(LinkRankComputation.class);
     giraphConf.setMasterComputeClass(LinkRankVertexMasterCompute.class);
     giraphConf.setOutEdgesClass(ByteArrayEdges.class);
-    giraphConf.setVertexInputFormatClass(NutchTableEdgeInputFormat.class);
+    giraphConf.setWorkerContextClass(LinkRankVertexWorkerContext.class);
+    giraphConf.setVertexInputFormatClass(NutchHostEdgeInputFormat.class);
     giraphConf.setVertexOutputFormatClass(NutchTableEdgeOutputFormat.class);
     giraphConf.setInt("giraph.linkRank.superstepCount", 10);
+    giraphConf.set("giraph.linkRank.qualifier", QUALIFIER);
+
     giraphConf.setWorkerConfiguration(1, 1, 100.0f);
+    LOG.info("setting input table as " + INPUT_TABLE_NAME);
     giraphConf.set(TableInputFormat.INPUT_TABLE, INPUT_TABLE_NAME);
     giraphConf.set(TableOutputFormat.OUTPUT_TABLE, OUTPUT_TABLE_NAME);
 
-    GiraphJob giraphJob = new GiraphJob(giraphConf, "LinkRank");
+    LOG.info("Table input: ========= " + giraphConf.get(TableInputFormat.INPUT_TABLE));
+
+    GiraphJob giraphJob = new GiraphJob(giraphConf, getClass().getName());
     return giraphJob.run(true) ? 0: -1;
 
   }
