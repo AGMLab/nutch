@@ -2,11 +2,11 @@ package org.apache.nutch.scoring;
 
 import org.apache.giraph.conf.GiraphConfiguration;
 import org.apache.giraph.edge.ByteArrayEdges;
-import org.apache.giraph.examples.LinkRank.LinkRankComputation;
-import org.apache.giraph.examples.LinkRank.LinkRankVertexMasterCompute;
-import org.apache.giraph.examples.LinkRank.LinkRankVertexWorkerContext;
-import org.apache.giraph.examples.LinkRank.NutchTableEdgeInputFormat;
-import org.apache.giraph.examples.LinkRank.NutchTableEdgeOutputFormat;
+import org.apache.giraph.nutch.LinkRank.LinkRankComputation;
+import org.apache.giraph.nutch.LinkRank.LinkRankVertexMasterCompute;
+import org.apache.giraph.nutch.LinkRank.LinkRankVertexWorkerContext;
+import org.apache.giraph.nutch.LinkRank.NutchHostEdgeInputFormat;
+import org.apache.giraph.nutch.LinkRank.NutchTableEdgeOutputFormat;
 import org.apache.giraph.job.GiraphJob;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Abortable;
@@ -24,7 +24,7 @@ import org.apache.nutch.api.NutchApp;
 
 public class LinkRankGiraphJob implements Tool {
   private Logger LOG = Logger.getLogger(getClass());
-  private GiraphConfiguration conf;
+  private Configuration conf;
   private String INPUT_TABLE_NAME = "webpage";
   private String OUTPUT_TABLE_NAME = "webpage";
   private String QUALIFIER = "linkrank";
@@ -96,7 +96,7 @@ public class LinkRankGiraphJob implements Tool {
 
   @Override
   public void setConf(final Configuration conf) {
-    this.conf = new GiraphConfiguration(conf);
+    this.conf = conf;
   }
 
   @Override
