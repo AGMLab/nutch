@@ -5,8 +5,9 @@ import org.apache.giraph.edge.ByteArrayEdges;
 import org.apache.giraph.nutch.LinkRank.LinkRankComputation;
 import org.apache.giraph.nutch.LinkRank.LinkRankVertexMasterCompute;
 import org.apache.giraph.nutch.LinkRank.LinkRankVertexWorkerContext;
-import org.apache.giraph.nutch.LinkRank.NutchHostEdgeInputFormat;
-import org.apache.giraph.nutch.LinkRank.NutchTableEdgeOutputFormat;
+import org.apache.giraph.nutch.LinkRank.Nutch2WebpageInputFormat;
+import org.apache.giraph.nutch.LinkRank.Nutch2WebpageOutputFormat;
+import org.apache.giraph.nutch.LinkRank.LinkRankVertexFilter;
 import org.apache.giraph.job.GiraphJob;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Abortable;
@@ -27,7 +28,7 @@ public class LinkRankGiraphJob implements Tool {
   private Configuration conf;
   private String INPUT_TABLE_NAME = "webpage";
   private String OUTPUT_TABLE_NAME = "webpage";
-  private String QUALIFIER = "linkrank";
+  private String QUALIFIER = "_lr_";
 
   public void setup() {
     String confId = ConfResource.DEFAULT_CONF;
@@ -35,11 +36,11 @@ public class LinkRankGiraphJob implements Tool {
     if (getClass() == LinkRankGiraphJob.class){
       INPUT_TABLE_NAME = nutchConf.get("storage.schema.webpage");
       OUTPUT_TABLE_NAME = nutchConf.get("storage.schema.webpage");
-      QUALIFIER = "linkrank";
+      QUALIFIER = "_lr_";
     } else {
       INPUT_TABLE_NAME = nutchConf.get("storage.schema.host");
       OUTPUT_TABLE_NAME = "hostrank";
-      QUALIFIER = "hostrank";
+      QUALIFIER = "_hr_";
     }
     LOG.info("Using HBase table of Nutch: " + INPUT_TABLE_NAME);
   }
@@ -77,15 +78,19 @@ public class LinkRankGiraphJob implements Tool {
     giraphConf.setMasterComputeClass(LinkRankVertexMasterCompute.class);
     giraphConf.setOutEdgesClass(ByteArrayEdges.class);
     giraphConf.setWorkerContextClass(LinkRankVertexWorkerContext.class);
-    giraphConf.setVertexInputFormatClass(NutchHostEdgeInputFormat.class);
-    giraphConf.setVertexOutputFormatClass(NutchTableEdgeOutputFormat.class);
+    giraphConf.setVertexInputFormatClass(Nutch2WebpageInputFormat.class);
+    giraphConf.setVertexOutputFormatClass(Nutch2WebpageOutputFormat.class);
     giraphConf.setInt("giraph.linkRank.superstepCount", 10);
+    giraphConf.setInt("giraph.linkRank.scale", 10);
+    giraphConf.set("giraph.linkRank.family", "mtdt");
     giraphConf.set("giraph.linkRank.qualifier", QUALIFIER);
-
+    giraphConf.setVertexInputFilterClass(LinkRankVertexFilter.class);
     giraphConf.setWorkerConfiguration(1, 1, 100.0f);
     LOG.info("setting input table as " + INPUT_TABLE_NAME);
     giraphConf.set(TableInputFormat.INPUT_TABLE, INPUT_TABLE_NAME);
     giraphConf.set(TableOutputFormat.OUTPUT_TABLE, OUTPUT_TABLE_NAME);
+
+
 
     LOG.info("Table input: ========= " + giraphConf.get(TableInputFormat.INPUT_TABLE));
 
