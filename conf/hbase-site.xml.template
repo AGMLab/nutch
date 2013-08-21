@@ -22,4 +22,12 @@
  */
 -->
 <configuration>
+  <property>
+		<name>hbase.rootdir</name>
+		<value>/home/gyhot/hbase-datadir-90-5</value>
+	</property>
+	<property>
+		<name>hbase.zookeeper.property.dataDir</name>
+		<value>/home/gyhot/zookeeper-datadir/</value>
+	</property>
 </configuration>
