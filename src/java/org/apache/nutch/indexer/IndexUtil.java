@@ -16,14 +16,26 @@
  ******************************************************************************/
 package org.apache.nutch.indexer;
 
+import org.apache.avro.util.Utf8;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.nutch.host.HostDb;
 import org.apache.nutch.scoring.ScoringFilterException;
 import org.apache.nutch.scoring.ScoringFilters;
+import org.apache.nutch.storage.Host;
 import org.apache.nutch.storage.WebPage;
+import org.apache.nutch.util.Bytes;
+import org.apache.nutch.util.NutchConfiguration;
 import org.apache.nutch.util.StringUtil;
 import org.apache.nutch.util.TableUtil;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.ByteBuffer;
+
+import javax.sound.midi.Soundbank;
 
 /**
  * Utility to create an indexed document from a webpage.  
@@ -36,8 +48,18 @@ public class IndexUtil {
   
   private IndexingFilters filters;
   private ScoringFilters scoringFilters;
-  
+  private Configuration conf;
+  private HostDb hostDb;
   public IndexUtil(Configuration conf) {
+    this.conf = NutchConfiguration.create();
+    try {
+		this.hostDb = new HostDb(conf);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    LOG.info(this.conf.get("fetcher.queue.use.host.settings"));
+
     filters = new IndexingFilters(conf);
     scoringFilters = new ScoringFilters(conf);
   }
@@ -83,11 +105,60 @@ public class IndexUtil {
     // store boost for use by explain and dedup
     doc.add("boost", Float.toString(boost));
 
-    // Index LinkRank Score.
-    double linkRankScore = page.getLinkRank();
+    
+    String reprUrl = null;
+    if (page.isReadable(WebPage.Field.REPR_URL.getIndex())) {
+      reprUrl = TableUtil.toString(page.getReprUrl());
+    }
+    
+    // Index HostRank score.
+    double hostRankScore = getHostRankScore(url, reprUrl);
+    doc.add("hostrank", Double.toString(hostRankScore));
+    
+    // Index LinkRank score.
+    double linkRankScore = page.getFromMetadata(new Utf8("_lr_")).getDouble();
     doc.add("linkrank", Double.toString(linkRankScore));
 
     return doc;
+  }
+  
+  /**
+   * Returns the HostRank score for the given url.
+   * @param reprUrl
+   * @param url
+   * @return
+   */
+  private double getHostRankScore(String url, String reprUrl){
+    double hostrankScore = 0.0;
+    String host = null;
+    try {
+      URL u;
+      if (reprUrl != null) {
+        u = new URL(reprUrl);
+      } else {
+        u = new URL(url);
+      }
+
+      host = u.getHost();
+      System.out.println("Host: " + host);
+      Host h = hostDb.getByHostName(host);    
+      System.out.println("Metadata: =====" + h.getMetadata().keySet());
+
+      try {
+        ByteBuffer b = h.getFromMetadata(new Utf8("_hr_"));
+        hostrankScore = Bytes.toDouble(b.array());
+      } catch (NullPointerException e){
+        //e.printStackTrace();
+        LOG.info("No _hr_ for " + h);
+      }
+      
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return hostrankScore;
+
   }
   
 }

@@ -1,10 +1,22 @@
 package org.apache.nutch.scoring;
 
-import org.apache.log4j.Logger;
+import org.apache.giraph.nutch.LinkRank.io.filters.HostRankVertexFilter;
+import org.apache.giraph.nutch.LinkRank.io.formats.Nutch2HostInputFormat;
+import org.apache.giraph.nutch.LinkRank.io.formats.Nutch2HostOutputFormat;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.nutch.api.ConfResource;
+import org.apache.nutch.api.NutchApp;
 
-public class HostRankGiraphJob extends LinkRankGiraphJob {
-  private static final Logger LOG = Logger.getLogger(HostRankGiraphJob.class);
-  private String INPUT_TABLE_NAME = "host";
-  private String OUTPUT_TABLE_NAME = "webpage";
-  private String QUALIFIER = "hostrank";
+public class HostRankGiraphJob extends AbstractGiraphJob {
+	public void setup() {
+	    String confId = ConfResource.DEFAULT_CONF;
+	    Configuration nutchConf = NutchApp.confMgr.get(confId);
+	    LOG.info("=========HostRank=========");
+	    INPUT_FORMAT = Nutch2HostInputFormat.class;
+	    OUTPUT_FORMAT = Nutch2HostOutputFormat.class;
+	    VERTEX_FILTER = HostRankVertexFilter.class;
+	    INPUT_TABLE_NAME = nutchConf.get("storage.schema.host", "host");
+	    OUTPUT_TABLE_NAME = "host";
+	    QUALIFIER = "_hr_";
+	}
 }
