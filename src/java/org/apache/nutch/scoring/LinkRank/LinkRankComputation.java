@@ -218,8 +218,8 @@ public class LinkRankComputation extends BasicComputation<Text, DoubleWritable,
    * @return score to give each individual node
    */
   public Double getDanglingContribution() {
-    DoubleWritable danWritable = getAggregatedValue(LinkRankVertex.DANGLING_AGG);
-    Double danglingSum = danWritable.get();
+    DoubleWritable dWritable = getAggregatedValue(LinkRankVertex.DANGLING_AGG);
+    Double danglingSum = dWritable.get();
     Double contribution = danglingSum / getTotalNumVertices();
     return contribution;
   }
