@@ -1,8 +1,8 @@
 package org.apache.nutch.scoring;
 
-import org.apache.nutch.scoring.LinkRank.HostRankVertexFilter;
-import org.apache.nutch.scoring.LinkRank.Nutch2HostInputFormat;
-import org.apache.nutch.scoring.LinkRank.Nutch2HostOutputFormat;
+import org.apache.nutch.scoring.LinkRank.io.HostRankVertexFilter;
+import org.apache.nutch.scoring.LinkRank.io.Nutch2HostInputFormat;
+import org.apache.nutch.scoring.LinkRank.io.Nutch2HostOutputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.nutch.api.ConfResource;
 import org.apache.nutch.api.NutchApp;

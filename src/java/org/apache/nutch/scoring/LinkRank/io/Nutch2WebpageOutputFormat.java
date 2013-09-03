@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.nutch.scoring.LinkRank;
+package org.apache.nutch.scoring.LinkRank.io;
 
 import org.apache.giraph.graph.Vertex;
 import org.apache.giraph.io.VertexWriter;
@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import static org.apache.nutch.scoring.LinkRank.NutchUtil.reverseHost;
+import static org.apache.nutch.scoring.LinkRank.utils.NutchUtil.reverseUrl;
 
 
 /**
@@ -43,20 +43,20 @@ import static org.apache.nutch.scoring.LinkRank.NutchUtil.reverseHost;
  * Writes scores for each URL on the table.
  * By default, table name should be given as 'webpage'.
  */
-public class Nutch2HostOutputFormat
+public class Nutch2WebpageOutputFormat
         extends HBaseVertexOutputFormat<Text, DoubleWritable, NullWritable> {
 
   /**
    * Logger
    */
   private static final Logger LOG =
-          Logger.getLogger(Nutch2HostOutputFormat.class);
+          Logger.getLogger(Nutch2WebpageOutputFormat.class);
 
   /**
    * HBase Vertex Writer for LinkRank
    * @param context the information about the task
    * @return NutchTableEdgeVertexWriter
-   * @throws java.io.IOException
+   * @throws IOException
    * @throws InterruptedException
    */
   public VertexWriter<Text, DoubleWritable, NullWritable>
@@ -80,12 +80,12 @@ public class Nutch2HostOutputFormat
     /**
      * Score qualifier "pagerank". Calculated scores will be written here.
      */
-    private static byte[] LINKRANK_QUALIFIER = Bytes.toBytes("_hr_");
+    private static byte[] LINKRANK_QUALIFIER = Bytes.toBytes("_lr_");
 
     /**
      * Constructor for NutchTableEdgeVertexWriter
      * @param context context
-     * @throws java.io.IOException
+     * @throws IOException
      * @throws InterruptedException
      */
     public NutchTableEdgeVertexWriter(TaskAttemptContext context)
@@ -95,24 +95,23 @@ public class Nutch2HostOutputFormat
       String fStr = conf.get("giraph.linkRank.family", "mtdt");
       SCORE_FAMILY = Bytes.toBytes(fStr);
 
-      String qStr = conf.get("giraph.linkRank.qualifier", "_hr_");
+      String qStr = conf.get("giraph.linkRank.qualifier", "_lr_");
       LINKRANK_QUALIFIER = Bytes.toBytes(qStr);
     }
 
     /**
      * Write the value (score) of the vertex
      * @param vertex vertex to write
-     * @throws java.io.IOException
+     * @throws IOException
      * @throws InterruptedException
      */
     public void writeVertex(
       Vertex<Text, DoubleWritable, NullWritable> vertex)
       throws IOException, InterruptedException {
-      LOG.info("================ *** ===============");
       RecordWriter<ImmutableBytesWritable, Writable> writer = getRecordWriter();
       // get the byte representation of current vertex ID.
-      String reversedUrl = reverseHost(vertex.getId().toString());
-      byte[] rowBytes = reversedUrl.getBytes(Charset.forName("UTF-8"));
+      byte[] rowBytes = reverseUrl(vertex.getId().toString())
+              .getBytes(Charset.forName("UTF-8"));
 
       // create a new Put operation with vertex value in it.
       Put put = new Put(rowBytes);
@@ -122,7 +121,6 @@ public class Nutch2HostOutputFormat
       double value = valueWritable.get();
 
       String valueStr = Double.toString(value);
-      LOG.info("========== " + reversedUrl + " => " + valueStr);
       byte[] valueBytes = Bytes.toBytes(value);
 
       // write the vertex, score pair.

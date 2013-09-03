@@ -16,23 +16,30 @@
  * limitations under the License.
  */
 
-package org.apache.nutch.scoring.LinkRank;
+package org.apache.nutch.scoring.LinkRank.utils;
 
 /**
  * A pair of integers.
  */
-public class StringFloatPair {
+public class StringDoublePair {
   /** First element. */
   private String first;
   /** Second element. */
-  private float second;
+  private double second;
+
+  /**
+   * Empty Constructor
+   */
+  public StringDoublePair() {
+
+  }
 
   /** Constructor.
    *
    * @param fst First element
    * @param snd Second element
    */
-  public StringFloatPair(String fst, float snd) {
+  public StringDoublePair(String fst, double snd) {
     first = fst;
     second = snd;
   }
@@ -60,7 +67,7 @@ public class StringFloatPair {
    *
    * @return The second element
    */
-  public float getSecond() {
+  public double getSecond() {
     return second;
   }
 
@@ -69,7 +76,7 @@ public class StringFloatPair {
    *
    * @param second The second element
    */
-  public void setSecond(float second) {
+  public void setSecond(double second) {
     this.second = second;
   }
 }

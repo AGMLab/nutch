@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.nutch.scoring.LinkRank;
+package org.apache.nutch.scoring.LinkRank.utils;
 
 /**
  * A pair of Strings.
@@ -26,6 +26,13 @@ public class StringStringPair {
   private String first;
   /** Second element. */
   private String second;
+
+  /**
+   * Emtpy constructor.
+   */
+  public StringStringPair() {
+
+  }
 
   /** Constructor.
    *

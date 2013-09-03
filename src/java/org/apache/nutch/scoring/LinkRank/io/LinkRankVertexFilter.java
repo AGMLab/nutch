@@ -16,15 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.nutch.scoring.LinkRank;
+package org.apache.nutch.scoring.LinkRank.io;
 
 import org.apache.giraph.graph.Vertex;
 import org.apache.giraph.io.filters.VertexInputFilter;
+import org.apache.nutch.scoring.LinkRank.utils.NutchUtil;
 
 /**
  * Vertex filter for skipping malformed URLs.
  */
-public class HostRankVertexFilter implements VertexInputFilter {
+public class LinkRankVertexFilter implements VertexInputFilter {
   /**
    * Defines which vertices to drop.
    * @param vertex to check
@@ -32,7 +33,7 @@ public class HostRankVertexFilter implements VertexInputFilter {
    */
   @Override
   public boolean dropVertex(Vertex vertex) {
-    String source = "http://" + vertex.getId().toString();
+    String source = vertex.getId().toString();
     return !NutchUtil.isValidURL(source);
   }
 }

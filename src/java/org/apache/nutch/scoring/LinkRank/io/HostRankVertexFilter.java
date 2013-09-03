@@ -16,24 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.nutch.scoring.LinkRank;
+package org.apache.nutch.scoring.LinkRank.io;
 
-import org.apache.giraph.edge.Edge;
-import org.apache.giraph.io.filters.EdgeInputFilter;
-import org.apache.hadoop.io.WritableComparable;
+import org.apache.giraph.graph.Vertex;
+import org.apache.giraph.io.filters.VertexInputFilter;
+import org.apache.nutch.scoring.LinkRank.utils.NutchUtil;
 
 /**
- * Edge filter for skipping malformed URLs.
+ * Vertex filter for skipping malformed URLs.
  */
-public class LinkRankEdgeFilter implements EdgeInputFilter {
+public class HostRankVertexFilter implements VertexInputFilter {
+  /**
+   * Defines which vertices to drop.
+   * @param vertex to check
+   * @return true if vertex has to be dropped.
+   */
   @Override
-  public boolean dropEdge(WritableComparable sourceId, Edge edge) {
-    if (!NutchUtil.isValidURL(sourceId.toString())) {
-      return true;
-    }
-    if (!NutchUtil.isValidURL(edge.getTargetVertexId().toString())) {
-      return true;
-    }
-    return false;
+  public boolean dropVertex(Vertex vertex) {
+    String source = "http://" + vertex.getId().toString();
+    return !NutchUtil.isValidURL(source);
   }
 }
