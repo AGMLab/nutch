@@ -5,10 +5,9 @@ import org.apache.giraph.edge.ByteArrayEdges;
 import org.apache.giraph.job.GiraphJob;
 import org.apache.nutch.scoring.LinkRank.LinkRankComputation;
 import org.apache.nutch.scoring.LinkRank.LinkRankVertexMasterCompute;
-import org.apache.nutch.scoring.LinkRank.LinkRankVertexWorkerContext;
-import org.apache.nutch.scoring.LinkRank.LinkRankVertexFilter;
-import org.apache.nutch.scoring.LinkRank.Nutch2WebpageInputFormat;
-import org.apache.nutch.scoring.LinkRank.Nutch2WebpageOutputFormat;
+import org.apache.nutch.scoring.LinkRank.io.LinkRankVertexFilter;
+import org.apache.nutch.scoring.LinkRank.io.Nutch2WebpageInputFormat;
+import org.apache.nutch.scoring.LinkRank.io.Nutch2WebpageOutputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Abortable;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -29,6 +28,8 @@ public abstract class AbstractGiraphJob implements Tool {
   protected Class INPUT_FORMAT = Nutch2WebpageInputFormat.class;
   protected Class VERTEX_FILTER = LinkRankVertexFilter.class;
   protected Class OUTPUT_FORMAT = Nutch2WebpageOutputFormat.class;
+  protected Class COMPUTATION = LinkRankComputation.class;
+  protected Class MASTER_COMPUTE = LinkRankVertexMasterCompute.class;
 
   /**
    * Subclasses should implement this. 
@@ -68,10 +69,9 @@ public abstract class AbstractGiraphJob implements Tool {
     GiraphConfiguration giraphConf = new GiraphConfiguration(config);
     giraphConf.setZooKeeperConfiguration(
             zooKeeperWatcher.getQuorum());
-    giraphConf.setComputationClass(LinkRankComputation.class);
-    giraphConf.setMasterComputeClass(LinkRankVertexMasterCompute.class);
+    giraphConf.setComputationClass(COMPUTATION);
+    giraphConf.setMasterComputeClass(MASTER_COMPUTE);
     giraphConf.setOutEdgesClass(ByteArrayEdges.class);
-    giraphConf.setWorkerContextClass(LinkRankVertexWorkerContext.class);
     giraphConf.setVertexInputFormatClass(INPUT_FORMAT);
     giraphConf.setVertexOutputFormatClass(OUTPUT_FORMAT);
     //giraphConf.setWorkerConfiguration(minWorkers, maxWorkers, minPercentResponded)
