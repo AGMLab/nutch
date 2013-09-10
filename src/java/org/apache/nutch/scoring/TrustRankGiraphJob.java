@@ -1,11 +1,11 @@
 package org.apache.nutch.scoring;
 
-import org.apache.nutch.scoring.LinkRank.TrustRankComputation;
-import org.apache.nutch.scoring.LinkRank.TrustRankVertexMasterCompute;
-import org.apache.nutch.scoring.LinkRank.io.HostRankVertexFilter;
-import org.apache.nutch.scoring.LinkRank.io.Nutch2HostInputFormat;
-import org.apache.nutch.scoring.LinkRank.io.Nutch2HostOutputFormat;
-import org.apache.nutch.scoring.LinkRank.io.Nutch2HostTrustInputFormat;
+import org.apache.giraph.ranking.LinkRank.TrustRankComputation;
+import org.apache.giraph.ranking.LinkRank.TrustRankVertexMasterCompute;
+import org.apache.giraph.ranking.LinkRank.io.HostRankVertexFilter;
+import org.apache.giraph.ranking.LinkRank.io.Nutch2HostInputFormat;
+import org.apache.giraph.ranking.LinkRank.io.Nutch2HostOutputFormat;
+import org.apache.giraph.ranking.LinkRank.io.Nutch2HostTrustInputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.nutch.api.ConfResource;
 import org.apache.nutch.api.NutchApp;

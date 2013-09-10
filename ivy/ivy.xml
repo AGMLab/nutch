@@ -101,8 +101,9 @@
     <dependency org="org.restlet.jse" name="org.restlet.ext.jackson" rev="2.0.5" 
       conf="*->default" />
       
-    <dependency org="org.apache.giraph" name="giraph-core" rev="1.1.0-SNAPSHOT" conf="*->default"/>
-    <dependency org="org.apache.giraph" name="giraph-hbase" rev="1.1.0-SNAPSHOT" conf="*->default"/>
+<!--    <dependency org="org.apache.giraph" name="giraph-core" rev="1.1.0-SNAPSHOT" conf="*->default"/>
+    <dependency org="org.apache.giraph" name="giraph-hbase" rev="1.1.0-SNAPSHOT" conf="*->default"/>-->
+    <dependency org="org.apache.giraph" name="giraph-nutch" rev="1.1.0-SNAPSHOT" conf="*->default"/>
     <dependency org="org.apache.hbase" name="hbase" rev="0.90.5" conf="*->default"/>
 
     <!-- Uncomment this to use MySQL as database with SQL as Gora store. -->

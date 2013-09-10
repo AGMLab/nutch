@@ -1,7 +1,7 @@
 package org.apache.nutch.scoring;
 
-import org.apache.nutch.scoring.LinkRank.io.Nutch2WebpageInputFormat;
-import org.apache.nutch.scoring.LinkRank.io.Nutch2WebpageOutputFormat;
+import org.apache.giraph.ranking.LinkRank.io.Nutch2WebpageInputFormat;
+import org.apache.giraph.ranking.LinkRank.io.Nutch2WebpageOutputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.nutch.api.ConfResource;
 import org.apache.nutch.api.NutchApp;
