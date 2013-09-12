@@ -35,8 +35,7 @@ import java.util.Map;
 public class LinkRankJob {
 
   public static final Logger LOG = LoggerFactory.getLogger(LinkRankJob.class);
-  public LinkRankJob() {
-    Map<String, Object> args = null;
+  public LinkRankJob(String[] args) {
     try {
       run(args);
     } catch (Exception e) {
@@ -52,21 +51,17 @@ public class LinkRankJob {
     return null;
   }
 
-  private int updateTable() throws Exception {
+  public int run(String[] args) throws Exception {
     LOG.info("ScoreUpdaterJob: starting");
-    run(ToolUtil.toArgMap(Nutch.ARG_CRAWL, 0));
+    run(ToolUtil.toArgMap((Object[])args));
     LOG.info("ScoreUpdaterJob: done");
     return 0;
-  }
-
-  public int run(String[] args) throws Exception {
-    return updateTable();
   }
 
   public static void main(String[] args) throws Exception {
     //int res = ToolRunner.run(NutchConfiguration.create(),
     // new ScoreUpdaterJob(), args);
-    new LinkRankJob();
+    new LinkRankJob(args);
 
   }
 

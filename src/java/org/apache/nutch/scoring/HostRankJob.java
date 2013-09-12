@@ -26,8 +26,7 @@ import java.util.Map;
 public class HostRankJob {
 
   public static final Logger LOG = LoggerFactory.getLogger(HostRankJob.class);
-  public HostRankJob() {
-    Map<String, Object> args = null;
+  public HostRankJob(String[] args) {
     try {
       run(args);
     } catch (Exception e) {
@@ -35,29 +34,18 @@ public class HostRankJob {
     }
   }
 
-  public Map<String, Object> run(Map<String, Object> args) throws Exception {
+  public Map<String, Object> run(String[] args) throws Exception {
     LOG.info("HostRank starts...");
-    HostRankGiraphJob HostRankJob = new HostRankGiraphJob();
-    HostRankJob.run(null);
+    HostRankGiraphJob HostRankJob = new HostRankGiraphJob();    
+    HostRankJob.run(args);
     LOG.info("HostRank has finished...");
     return null;
-  }
-
-  private int updateTable() throws Exception {
-    LOG.info("ScoreUpdaterJob: starting");
-    run(ToolUtil.toArgMap(Nutch.ARG_CRAWL, 0));
-    LOG.info("ScoreUpdaterJob: done");
-    return 0;
-  }
-
-  public int run(String[] args) throws Exception {
-    return updateTable();
   }
 
   public static void main(String[] args) throws Exception {
     //int res = ToolRunner.run(NutchConfiguration.create(),
     // new ScoreUpdaterJob(), args);
-    new HostRankJob();
+    new HostRankJob(args);
 
   }
 

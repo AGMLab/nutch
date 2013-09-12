@@ -1,5 +1,7 @@
 package org.apache.nutch.scoring;
 
+import java.util.Map.Entry;
+
 import org.apache.giraph.conf.GiraphConfiguration;
 import org.apache.giraph.edge.ByteArrayEdges;
 import org.apache.giraph.job.GiraphJob;
@@ -15,6 +17,7 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
 import org.apache.hadoop.hbase.mapreduce.TableOutputFormat;
 import org.apache.hadoop.hbase.zookeeper.ZooKeeperWatcher;
+import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.Tool;
 import org.apache.log4j.Logger;
 
@@ -41,8 +44,7 @@ public abstract class AbstractGiraphJob implements Tool {
    * Run method for the giraph job. No need for overriding this.
    */
   @Override
-  public int run(String[] strings) throws Exception {
-
+  public int run(String[] args) throws Exception {
     LOG.info("Starting " + getClass().getName());
     setup();
     Configuration config = HBaseConfiguration.create();
@@ -75,16 +77,27 @@ public abstract class AbstractGiraphJob implements Tool {
     giraphConf.setVertexInputFormatClass(INPUT_FORMAT);
     giraphConf.setVertexOutputFormatClass(OUTPUT_FORMAT);
     //giraphConf.setWorkerConfiguration(minWorkers, maxWorkers, minPercentResponded)
-    giraphConf.setInt("giraph.linkRank.superstepCount", 20);
+    giraphConf.setInt("giraph.linkRank.superstepCount", 10);
     giraphConf.setInt("giraph.linkRank.scale", 10);
     giraphConf.set("giraph.linkRank.family", "mtdt");
     giraphConf.set("giraph.linkRank.qualifier", QUALIFIER);
     giraphConf.setVertexInputFilterClass(VERTEX_FILTER);
-    giraphConf.setWorkerConfiguration(1, 1, 100.0f);
+    //giraphConf.setWorkerConfiguration(1, 1, 100.0f);
     LOG.info("setting input table as " + INPUT_TABLE_NAME);
     LOG.info("setting output table as " + OUTPUT_TABLE_NAME);
     giraphConf.set(TableInputFormat.INPUT_TABLE, INPUT_TABLE_NAME);
     giraphConf.set(TableOutputFormat.OUTPUT_TABLE, OUTPUT_TABLE_NAME);
+    
+    // optional parameters
+    //GenericOptionsParser gp = new GenericOptionsParser(giraphConf, args);
+    //Configuration commandConf = (GiraphConfiguration)gp.getConfiguration();
+    //LOG.info(commandConf.toString());
+    
+    // TODO: Do this with Generic Options Parser if possible.
+    if (args[0].equals("-w")) {
+    	giraphConf.setWorkerConfiguration(1, Integer.parseInt(args[1]), 85.0f);
+    }
+    
  
     
     LOG.info("Table input: ========= " + giraphConf.get(TableInputFormat.INPUT_TABLE));
@@ -95,6 +108,7 @@ public abstract class AbstractGiraphJob implements Tool {
      * FileOutputFormat.setOutputPath(giraphJob.getInternalJob(), new Path("/user/emre/hostrank"));  
     */
     admin.close();
+    giraphJob.getInternalJob().setJarByClass(LinkRankComputation.class);
     return giraphJob.run(true) ? 0: -1;
     
   }
