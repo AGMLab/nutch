@@ -14,7 +14,7 @@ public class TrustRankGiraphJob extends AbstractGiraphJob {
 	public void setup() {
 	    String confId = ConfResource.DEFAULT_CONF;
 	    Configuration nutchConf = NutchApp.confMgr.get(confId);
-	    LOG.info("=========HostRank=========");
+	    LOG.info("=========TrustRank=========");
 	    INPUT_FORMAT = Nutch2HostTrustInputFormat.class;
 	    OUTPUT_FORMAT = Nutch2HostOutputFormat.class;
 	    VERTEX_FILTER = HostRankVertexFilter.class;

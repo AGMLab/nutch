@@ -18,5 +18,6 @@ public class HostRankGiraphJob extends AbstractGiraphJob {
 	    INPUT_TABLE_NAME = nutchConf.get("storage.schema.host", "host");
 	    OUTPUT_TABLE_NAME = "host";
 	    QUALIFIER = "_hr_";
+	    LOG.info("Using HBase table of Nutch: " + INPUT_TABLE_NAME);
 	}
 }

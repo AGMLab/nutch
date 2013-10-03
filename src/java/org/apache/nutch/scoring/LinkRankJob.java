@@ -43,20 +43,21 @@ public class LinkRankJob {
     }
   }
 
-  public Map<String, Object> run(Map<String, Object> args) throws Exception {
+  public Map<String, Object> run(String[] args) throws Exception {
     LOG.info("LinkRank starts...");
     LinkRankGiraphJob linkRankJob = new LinkRankGiraphJob();
-    linkRankJob.run(null);
+//    linkRankJob.run(null);
+    linkRankJob.run(args);
     LOG.info("LinkRank has finished...");
     return null;
   }
 
-  public int run(String[] args) throws Exception {
-    LOG.info("ScoreUpdaterJob: starting");
-    run(ToolUtil.toArgMap((Object[])args));
-    LOG.info("ScoreUpdaterJob: done");
-    return 0;
-  }
+//  public int run(String[] args) throws Exception {
+//    LOG.info("ScoreUpdaterJob: starting");
+//    run(ToolUtil.toArgMap((Object[])args));
+//    LOG.info("ScoreUpdaterJob: done");
+//    return 0;
+//  }
 
   public static void main(String[] args) throws Exception {
     //int res = ToolRunner.run(NutchConfiguration.create(),
