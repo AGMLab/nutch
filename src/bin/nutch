@@ -57,6 +57,9 @@ if [ $# = 0 ]; then
   echo " updatehostdb   update host table after parsing"
   echo " readdb 	read/dump records from page database"
   echo " readhostdb     display entries from the hostDB"
+  echo " linkrank     calculate linkrank (-w workercount)"
+  echo " hostrank     calculate hostrank (-w workercount)"
+  echo " usagerank     calculate usage rank from input csv file"
   echo " elasticindex   run the elasticsearch indexer"
   echo " solrindex 	run the solr indexer on parsed segments and linkdb"
   echo " solrdedup 	remove duplicates from solr"
@@ -200,6 +203,8 @@ elif [ "$COMMAND" = "linkrank" ] ; then
 CLASS=org.apache.nutch.scoring.LinkRankJob
 elif [ "$COMMAND" = "hostrank" ] ; then
 CLASS=org.apache.nutch.scoring.HostRankJob
+elif [ "$COMMAND" = "usagerank" ] ; then
+CLASS=org.apache.nutch.scoring.UsageRankNormalization
 elif [ "$COMMAND" = "updatehostdb" ] ; then
 CLASS=org.apache.nutch.host.HostDbUpdateJob
 elif [ "$COMMAND" = "readdb" ] ; then
