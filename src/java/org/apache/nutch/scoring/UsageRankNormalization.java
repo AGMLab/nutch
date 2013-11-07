@@ -80,7 +80,8 @@ public class UsageRankNormalization {
              int i = 0;
             while ( (line = bufferedReader.readLine()) != null){
                 String[] cols = line.split("\t");
-                Double logValue = Math.log(Integer.parseInt(cols[2]));
+                System.out.println(cols[0] + " "+cols[1]);
+                Double logValue = Math.log(Integer.parseInt(cols[1]));
                 logVals[i] = logValue;
                 hosts[i] = cols[0];
                 sumOfLog += logValue;
