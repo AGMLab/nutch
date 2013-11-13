@@ -46,7 +46,6 @@ public class LinkRankJob {
   public Map<String, Object> run(String[] args) throws Exception {
     LOG.info("LinkRank starts...");
     LinkRankGiraphJob linkRankJob = new LinkRankGiraphJob();
-//    linkRankJob.run(null);
     linkRankJob.run(args);
     LOG.info("LinkRank has finished...");
     return null;

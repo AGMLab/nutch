@@ -1,5 +1,6 @@
 package org.apache.nutch.scoring;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.distribution.NormalDistribution;
 import org.apache.commons.math.distribution.NormalDistributionImpl;
@@ -8,6 +9,8 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.nutch.util.TableUtil;
+
 import java.io.*;
 
 
@@ -80,10 +83,9 @@ public class UsageRankNormalization {
              int i = 0;
             while ( (line = bufferedReader.readLine()) != null){
                 String[] cols = line.split("\t");
-                System.out.println(cols[0] + " "+cols[1]);
                 Double logValue = Math.log(Integer.parseInt(cols[1]));
                 logVals[i] = logValue;
-                hosts[i] = cols[0];
+                hosts[i] = reverseHost(cols[0]);
                 sumOfLog += logValue;
                 i++;
             }
@@ -127,6 +129,34 @@ public class UsageRankNormalization {
                 }
         }
 
+    }
+    
+    /**
+     * @param host
+     * 
+     * example:
+     * http://meb.gov.tr
+     * http://milliyet.tv
+     * http://acunn.com
+     * @return reversedHost
+     * 
+     * example:
+     * tr.gov.meb.www
+     * tv.milliyet.www
+     * com.acunn.www
+     */
+    public static String reverseHost(String host){
+    	host= host.substring(7);
+    	String[] pieces = StringUtils.split(host, '.');
+    	StringBuilder buf = new StringBuilder(host.length());
+    	for(int i = pieces.length - 1; i >= 0; i--){
+    		buf.append(pieces[i]);
+    		if(i != 0){
+    			buf.append('.');
+    		}
+    	}
+    	buf.append(".www");
+    	return buf.toString();
     }
 
 

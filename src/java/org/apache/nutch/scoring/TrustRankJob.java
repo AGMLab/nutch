@@ -26,8 +26,7 @@ import java.util.Map;
 public class TrustRankJob {
 
   public static final Logger LOG = LoggerFactory.getLogger(TrustRankJob.class);
-  public TrustRankJob() {
-    Map<String, Object> args = null;
+  public TrustRankJob(String[] args) {
     try {
       run(args);
     } catch (Exception e) {
@@ -35,29 +34,29 @@ public class TrustRankJob {
     }
   }
 
-  public Map<String, Object> run(Map<String, Object> args) throws Exception {
+  public Map<String, Object> run(String[] args) throws Exception {
     LOG.info("TrustRank starts...");
     TrustRankGiraphJob TrustRankJob = new TrustRankGiraphJob();
-    TrustRankJob.run(null);
+    TrustRankJob.run(args);
     LOG.info("TrustRank has finished...");
     return null;
   }
 
-  private int updateTable() throws Exception {
-    LOG.info("ScoreUpdaterJob: starting");
-    run(ToolUtil.toArgMap(Nutch.ARG_CRAWL, 0));
-    LOG.info("ScoreUpdaterJob: done");
-    return 0;
-  }
-
-  public int run(String[] args) throws Exception {
-    return updateTable();
-  }
+//  private int updateTable() throws Exception {
+//    LOG.info("ScoreUpdaterJob: starting");
+//    run(ToolUtil.toArgMap(Nutch.ARG_CRAWL, 0));
+//    LOG.info("ScoreUpdaterJob: done");
+//    return 0;
+//  }
+//
+//  public int run(String[] args) throws Exception {
+//    return updateTable();
+//  }
 
   public static void main(String[] args) throws Exception {
     //int res = ToolRunner.run(NutchConfiguration.create(),
     // new ScoreUpdaterJob(), args);
-    new TrustRankJob();
+    new TrustRankJob(args);
 
   }
 

@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.apache.nutch.scoring;
 
-import org.apache.nutch.metadata.Nutch;
-import org.apache.nutch.util.ToolUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

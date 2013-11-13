@@ -1,6 +1,7 @@
 package org.apache.nutch.tools;
 
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
@@ -35,12 +36,13 @@ public class TrustFlagLoader {
             try {
                 bufferedReader = new BufferedReader(new FileReader(inputFile));
                 String line = null;
+                String reversedHost=null;
 
                 while ( (line = bufferedReader.readLine()) != null){
                    String[] cols = line.split("\t");
-                   System.out.println("HOST: " + cols[0]);
-                    Put p = new Put(Bytes.toBytes(cols[1]));
-                   System.out.println("VISIT: " + cols[2]);
+                   reversedHost=reverseHost(cols[0]);
+                   System.out.println("reversedHost: " + reversedHost);
+                    Put p = new Put(Bytes.toBytes(reversedHost));
 
                    p.add(Bytes.toBytes("mtdt"), Bytes.toBytes("_tf_"), Bytes.toBytes("1"));
                    table.put(p);
@@ -60,6 +62,34 @@ public class TrustFlagLoader {
                         e.printStackTrace();
                     }
             }
+        }
+        
+        /**
+         * @param host
+         * 
+         * example:
+         * http://meb.gov.tr
+         * http://milliyet.tv
+         * http://acunn.com
+         * @return reversedHost
+         * 
+         * example:
+         * tr.gov.meb.www
+         * tv.milliyet.www
+         * com.acunn.www
+         */
+        public static String reverseHost(String host){
+        	host= host.substring(7);
+        	String[] pieces = StringUtils.split(host, '.');
+        	StringBuilder buf = new StringBuilder(host.length());
+        	for(int i = pieces.length - 1; i >= 0; i--){
+        		buf.append(pieces[i]);
+        		if(i != 0){
+        			buf.append('.');
+        		}
+        	}
+        	buf.append(".www");
+        	return buf.toString();
         }
 
         public static void main(String[] args){
