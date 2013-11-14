@@ -72,7 +72,8 @@ public class UsageRankNormalization {
         int numberOfLines = 0;
         String[] hosts;
         Double[] logVals;
-        try {
+        String reversedUrl;
+        try {        	
             bufferedReader = new BufferedReader(new FileReader(inputFile));
             String line = null;
             //ArrayList<Double> logValList = new ArrayList<Double>();
@@ -85,7 +86,9 @@ public class UsageRankNormalization {
                 String[] cols = line.split("\t");
                 Double logValue = Math.log(Integer.parseInt(cols[1]));
                 logVals[i] = logValue;
-                hosts[i] = reverseHost(cols[0]);
+//                hosts[i] = reverseHost(cols[0]);
+                reversedUrl = TableUtil.reverseUrl(cols[0]);
+                hosts[i] = TableUtil.getReversedHost(reversedUrl);
                 sumOfLog += logValue;
                 i++;
             }
@@ -109,9 +112,11 @@ public class UsageRankNormalization {
                 NormalDistribution distribution = new NormalDistributionImpl(logAvg, stdDevVal);
                 newValue = distribution.cumulativeProbability(logVals[i]) * scale;
                 Put p = new Put(Bytes.toBytes(hosts[i]));
-                p.add(Bytes.toBytes("mtdt"), Bytes.toBytes("_ur_"), Bytes.toBytes(String.valueOf(newValue)));
+                System.out.println("value: "+ String.valueOf(newValue));
+                System.out.println("string to byte value: "+Bytes.toBytes(String.valueOf(newValue)));
+                System.out.println("double to byte value: "+Bytes.toBytes(newValue));
+                p.add(Bytes.toBytes("mtdt"), Bytes.toBytes("_ur_"), Bytes.toBytes(newValue));
                 table.put(p);
-
             }
 
         } catch (FileNotFoundException e) {
@@ -135,9 +140,9 @@ public class UsageRankNormalization {
      * @param host
      * 
      * example:
-     * http://meb.gov.tr
-     * http://milliyet.tv
-     * http://acunn.com
+     * http://meb.gov.tr/
+     * http://milliyet.tv/
+     * http://acunn.com/
      * @return reversedHost
      * 
      * example:
@@ -145,19 +150,19 @@ public class UsageRankNormalization {
      * tv.milliyet.www
      * com.acunn.www
      */
-    public static String reverseHost(String host){
-    	host= host.substring(7);
-    	String[] pieces = StringUtils.split(host, '.');
-    	StringBuilder buf = new StringBuilder(host.length());
-    	for(int i = pieces.length - 1; i >= 0; i--){
-    		buf.append(pieces[i]);
-    		if(i != 0){
-    			buf.append('.');
-    		}
-    	}
-    	buf.append(".www");
-    	return buf.toString();
-    }
+//    public static String reverseHost(String host){
+//    	host= host.substring(host.indexOf("/")+2,host.lastIndexOf("/"));
+//    	String[] pieces = StringUtils.split(host, '.');
+//    	StringBuilder buf = new StringBuilder(host.length());
+//    	for(int i = pieces.length - 1; i >= 0; i--){
+//    		buf.append(pieces[i]);
+//    		if(i != 0){
+//    			buf.append('.');
+//    		}
+//    	}
+////    	buf.append(".www");
+//    	return buf.toString();
+//    }
 
 
     public static void main(String[] args){
