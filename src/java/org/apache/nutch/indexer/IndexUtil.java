@@ -111,9 +111,13 @@ public class IndexUtil {
       reprUrl = TableUtil.toString(page.getReprUrl());
     }
     
-    // Index HostRank score.
+ // Index HostRank score.
     double hostRankScore = getHostRankScore(url, reprUrl);
     doc.add("hostrank", Double.toString(hostRankScore));
+    
+ // Index TrustRank score.
+    double trustRankScore = getTrustRankScore(url, reprUrl);
+    doc.add("trustrank", Double.toString(trustRankScore));
     
     // Index LinkRank score.
     double linkRankScore = page.getFromMetadata(new Utf8("_lr_")).getDouble();
@@ -158,6 +162,45 @@ public class IndexUtil {
       e.printStackTrace();
     }
     return hostrankScore;
+
+  }
+  
+  /**
+   * Returns the TrustRank score for the given url.
+   * @param reprUrl
+   * @param url
+   * @return
+   */
+  private double getTrustRankScore(String url, String reprUrl){
+    double trustrankScore = 0.0;
+    String host = null;
+    try {
+      URL u;
+      if (reprUrl != null) {
+        u = new URL(reprUrl);
+      } else {
+        u = new URL(url);
+      }
+
+      host = u.getHost();
+      System.out.println("Host: " + host);
+      Host h = hostDb.getByHostName(host);    
+      System.out.println("Metadata: =====" + h.getMetadata().keySet());
+
+      try {
+        ByteBuffer b = h.getFromMetadata(new Utf8("_tr_"));
+        trustrankScore = Bytes.toDouble(b.array());
+      } catch (NullPointerException e){
+        //e.printStackTrace();
+        LOG.info("No _tr_ for " + h);
+      }
+      
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return trustrankScore;
 
   }
   
