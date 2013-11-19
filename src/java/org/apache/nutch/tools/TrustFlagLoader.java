@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.nutch.util.TableUtil;
 
 import java.io.*;
 
@@ -37,14 +38,16 @@ public class TrustFlagLoader {
                 bufferedReader = new BufferedReader(new FileReader(inputFile));
                 String line = null;
                 String reversedHost=null;
+                String reversedUrl=null;
 
                 while ( (line = bufferedReader.readLine()) != null){
                    String[] cols = line.split("\t");
-                   reversedHost=reverseHost(cols[0]);
-                   System.out.println("reversedHost: " + reversedHost);
+//                   reversedHost=reverseHost(cols[0]);
+                   reversedUrl = TableUtil.reverseUrl(cols[0]);
+                   reversedHost = TableUtil.getReversedHost(reversedUrl);
                     Put p = new Put(Bytes.toBytes(reversedHost));
 
-                   p.add(Bytes.toBytes("mtdt"), Bytes.toBytes("_tf_"), Bytes.toBytes("1"));
+                   p.add(Bytes.toBytes("mtdt"), Bytes.toBytes("_tf_"), Bytes.toBytes("1.0"));
                    table.put(p);
 
 
