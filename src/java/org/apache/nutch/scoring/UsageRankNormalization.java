@@ -73,6 +73,7 @@ public class UsageRankNormalization {
         String[] hosts;
         Double[] logVals;
         String reversedUrl;
+        
         try {        	
             bufferedReader = new BufferedReader(new FileReader(inputFile));
             String line = null;
@@ -113,8 +114,8 @@ public class UsageRankNormalization {
                 newValue = distribution.cumulativeProbability(logVals[i]) * scale;
                 Put p = new Put(Bytes.toBytes(hosts[i]));
                 System.out.println("value: "+ String.valueOf(newValue));
-                System.out.println("string to byte value: "+Bytes.toBytes(String.valueOf(newValue)));
-                System.out.println("double to byte value: "+Bytes.toBytes(newValue));
+//                System.out.println("string to byte value: "+Bytes.toBytes(String.valueOf(newValue)));
+//                System.out.println("double to byte value: "+Bytes.toBytes(newValue));
                 p.add(Bytes.toBytes("mtdt"), Bytes.toBytes("_ur_"), Bytes.toBytes(newValue));
                 table.put(p);
             }

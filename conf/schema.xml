@@ -358,6 +358,8 @@
     <!-- field for log version -->
     <field name="_version_" type="long" indexed="true" stored="true"/>
     <field name="hostrank" type="double" stored="true" indexed="true"/>
+    <field name="trustrank" type="double" stored="true" indexed="true"/>
+    <field name="usagerank" type="double" stored="true" indexed="true"/>
     <field name="linkrank" type="double" stored="true" indexed="true"/>
  </fields>
  <uniqueKey>id</uniqueKey>

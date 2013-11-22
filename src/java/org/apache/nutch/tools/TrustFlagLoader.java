@@ -39,6 +39,7 @@ public class TrustFlagLoader {
                 String line = null;
                 String reversedHost=null;
                 String reversedUrl=null;
+                String trustFlag="1";
 
                 while ( (line = bufferedReader.readLine()) != null){
                    String[] cols = line.split("\t");
@@ -46,8 +47,7 @@ public class TrustFlagLoader {
                    reversedUrl = TableUtil.reverseUrl(cols[0]);
                    reversedHost = TableUtil.getReversedHost(reversedUrl);
                     Put p = new Put(Bytes.toBytes(reversedHost));
-
-                   p.add(Bytes.toBytes("mtdt"), Bytes.toBytes("_tf_"), Bytes.toBytes("1.0"));
+                   p.add(Bytes.toBytes("mtdt"), Bytes.toBytes("_tf_"), Bytes.toBytes(trustFlag));
                    table.put(p);
 
 
