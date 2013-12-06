@@ -113,7 +113,7 @@ public class UsageRankNormalization {
                 NormalDistribution distribution = new NormalDistributionImpl(logAvg, stdDevVal);
                 newValue = distribution.cumulativeProbability(logVals[i]) * scale;
                 Put p = new Put(Bytes.toBytes(hosts[i]));
-                System.out.println("value: "+ String.valueOf(newValue));
+                System.out.println("host: " + hosts[i]  + "\tvalue: "+ String.valueOf(newValue));
 //                System.out.println("string to byte value: "+Bytes.toBytes(String.valueOf(newValue)));
 //                System.out.println("double to byte value: "+Bytes.toBytes(newValue));
                 p.add(Bytes.toBytes("mtdt"), Bytes.toBytes("_ur_"), Bytes.toBytes(newValue));
