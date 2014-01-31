@@ -20,6 +20,7 @@ import org.apache.hadoop.hbase.zookeeper.ZooKeeperWatcher;
 import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.Tool;
 import org.apache.log4j.Logger;
+import org.apache.nutch.metadata.Nutch;
 
 
 public abstract class AbstractGiraphJob implements Tool {
@@ -83,8 +84,7 @@ public abstract class AbstractGiraphJob implements Tool {
     giraphConf.set("giraph.linkRank.qualifier", QUALIFIER);
     giraphConf.setVertexInputFilterClass(VERTEX_FILTER);
     //giraphConf.setWorkerConfiguration(1, 1, 100.0f);
-    LOG.info("setting input table as " + INPUT_TABLE_NAME);
-    LOG.info("setting output table as " + OUTPUT_TABLE_NAME);
+    
     giraphConf.set(TableInputFormat.INPUT_TABLE, INPUT_TABLE_NAME);
     giraphConf.set(TableOutputFormat.OUTPUT_TABLE, OUTPUT_TABLE_NAME);
     
@@ -98,8 +98,14 @@ public abstract class AbstractGiraphJob implements Tool {
     	giraphConf.setWorkerConfiguration(1, Integer.parseInt(args[1]), 85.0f);
     }
     
- 
+    if(args[2].equals("-p")){
+    	giraphConf.set(TableInputFormat.INPUT_TABLE, args[3]+"_"+INPUT_TABLE_NAME);
+        giraphConf.set(TableOutputFormat.OUTPUT_TABLE, args[3]+"_"+OUTPUT_TABLE_NAME);
+    }
     
+ 
+    LOG.info("setting input table as " + INPUT_TABLE_NAME);
+    LOG.info("setting output table as " + OUTPUT_TABLE_NAME);
     LOG.info("Table input: ========= " + giraphConf.get(TableInputFormat.INPUT_TABLE));
     GiraphJob giraphJob = new GiraphJob(giraphConf, getClass().getName());
     /**
