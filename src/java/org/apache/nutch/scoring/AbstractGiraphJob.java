@@ -104,8 +104,8 @@ public abstract class AbstractGiraphJob implements Tool {
     }
     
  
-    LOG.info("setting input table as " + INPUT_TABLE_NAME);
-    LOG.info("setting output table as " + OUTPUT_TABLE_NAME);
+    LOG.info("setting input table as " + giraphConf.get(TableInputFormat.INPUT_TABLE));
+    LOG.info("setting output table as " + giraphConf.get(TableOutputFormat.OUTPUT_TABLE));
     LOG.info("Table input: ========= " + giraphConf.get(TableInputFormat.INPUT_TABLE));
     GiraphJob giraphJob = new GiraphJob(giraphConf, getClass().getName());
     /**
