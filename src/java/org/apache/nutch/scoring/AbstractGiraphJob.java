@@ -94,19 +94,19 @@ public abstract class AbstractGiraphJob implements Tool {
     //LOG.info(commandConf.toString());
     
     // TODO: Do this with Generic Options Parser if possible.
-    if (args[0].equals("-w")) {
-    	giraphConf.setWorkerConfiguration(1, Integer.parseInt(args[1]), 85.0f);
+    for (int i = 0; i < args.length; i++){
+    	if (args[i].equals("-w")) {
+    		giraphConf.setWorkerConfiguration(1, Integer.parseInt(args[i+1]), 85.0f);
+    	}
+    	if(args[i].equals("-p")){
+    		giraphConf.set(TableInputFormat.INPUT_TABLE, args[i+1]+"_"+INPUT_TABLE_NAME);
+    		giraphConf.set(TableOutputFormat.OUTPUT_TABLE, args[i+1]+"_"+OUTPUT_TABLE_NAME);
+    	}    	
     }
-    
-    if(args[2].equals("-p")){
-    	giraphConf.set(TableInputFormat.INPUT_TABLE, args[3]+"_"+INPUT_TABLE_NAME);
-        giraphConf.set(TableOutputFormat.OUTPUT_TABLE, args[3]+"_"+OUTPUT_TABLE_NAME);
-    }
-    
  
-    LOG.info("setting input table as " + giraphConf.get(TableInputFormat.INPUT_TABLE));
-    LOG.info("setting output table as " + giraphConf.get(TableOutputFormat.OUTPUT_TABLE));
-    LOG.info("Table input: ========= " + giraphConf.get(TableInputFormat.INPUT_TABLE));
+    LOG.info("Input Table : ========= " + giraphConf.get(TableInputFormat.INPUT_TABLE));
+    LOG.info("Output Table : ========= " + giraphConf.get(TableOutputFormat.OUTPUT_TABLE));
+    LOG.info("Worker count: ========= " + giraphConf.getMaxWorkers());
     GiraphJob giraphJob = new GiraphJob(giraphConf, getClass().getName());
     /**
      * If using HDFS for output use lines below:,

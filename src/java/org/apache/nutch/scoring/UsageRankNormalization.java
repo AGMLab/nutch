@@ -8,6 +8,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
+import org.apache.hadoop.hbase.mapreduce.TableOutputFormat;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.nutch.util.TableUtil;
 
@@ -23,7 +25,7 @@ import java.io.*;
  */
 public class UsageRankNormalization {
 
-    private static final String TABLE_NAME = "host";
+    private static String TABLE_NAME = "host";
 
     private static Double getMean(Double[] logVals)
     {
@@ -62,8 +64,18 @@ public class UsageRankNormalization {
         return Math.sqrt(getVariance(logVals));
     }
 
-    public static void normalizeUsageValues(String path, int scale){
-        File inputFile = new File(path);
+    public static void normalizeUsageValues(String[] args, int scale){
+    	File inputFile=null;
+    	for (int i = 0; i < args.length; i++){
+        	if (args[i].equals("-f")) {
+        		inputFile = new File(args[i+1]);
+        	}
+        	if(args[i].equals("-p")){
+        		TABLE_NAME=args[i+1]+"_"+TABLE_NAME;
+        	}    	
+        }
+    	
+        
         BufferedReader bufferedReader = null;
         Double sumOfLog = 0.0d;
         Double logAvg = 0.0d;
@@ -169,11 +181,11 @@ public class UsageRankNormalization {
     public static void main(String[] args){
 
         if (args.length < 1){
-            System.err.println("Usage: UsageRankNormalization <host_file>");
+            System.err.println("Usage: UsageRankNormalization -f <host_file> -p <output_table_prefix>");
             return;
         }
 
-        normalizeUsageValues(args[0], 10);
+        normalizeUsageValues(args, 10);
 
     }
 

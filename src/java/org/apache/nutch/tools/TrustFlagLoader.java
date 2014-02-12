@@ -20,11 +20,19 @@ import java.io.*;
  */
 public class TrustFlagLoader {
 
-    private static final String TABLE_NAME = "host";
+    private static String TABLE_NAME = "host";
 
 
-        public static void writeHostListToHBase(String path) throws IOException {
-            File inputFile = new File(path);
+        public static void writeHostListToHBase(String[] args) throws IOException {
+            File inputFile = null;
+        	for (int i = 0; i < args.length; i++){
+            	if (args[i].equals("-f")) {
+            		inputFile = new File(args[i+1]);
+            	}
+            	if(args[i].equals("-p")){
+            		TABLE_NAME=args[i+1]+"_"+TABLE_NAME;
+            	}    	
+            }
             BufferedReader bufferedReader = null;
             Configuration conf = HBaseConfiguration.create();
             HTable table = new HTable(conf, TABLE_NAME);
@@ -81,29 +89,29 @@ public class TrustFlagLoader {
          * tv.milliyet.www
          * com.acunn.www
          */
-        public static String reverseHost(String host){
-        	host= host.substring(7);
-        	String[] pieces = StringUtils.split(host, '.');
-        	StringBuilder buf = new StringBuilder(host.length());
-        	for(int i = pieces.length - 1; i >= 0; i--){
-        		buf.append(pieces[i]);
-        		if(i != 0){
-        			buf.append('.');
-        		}
-        	}
-        	buf.append(".www");
-        	return buf.toString();
-        }
+//        public static String reverseHost(String host){
+//        	host= host.substring(7);
+//        	String[] pieces = StringUtils.split(host, '.');
+//        	StringBuilder buf = new StringBuilder(host.length());
+//        	for(int i = pieces.length - 1; i >= 0; i--){
+//        		buf.append(pieces[i]);
+//        		if(i != 0){
+//        			buf.append('.');
+//        		}
+//        	}
+//        	buf.append(".www");
+//        	return buf.toString();
+//        }
 
         public static void main(String[] args){
 
             if (args.length < 1){
-                System.err.println("Usage: TrustFlagLoader <host_file>");
+                System.err.println("Usage: TrustFlagLoader -f <host_file> -p <output_table_prefix>");
                 return;
             }
 
             try {
-                writeHostListToHBase(args[0]);
+                writeHostListToHBase(args);
             } catch (IOException e) {
                 e.printStackTrace();
             }
