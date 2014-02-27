@@ -95,8 +95,8 @@ public class UsageRankNormalization {
             	   fileSystem = FileSystem.get(conf2);
             	   if(!hdfs){
             		   conf2.set("fs.default.name", "file:///");
-            		   //fileSystem = new RawLocalFileSystem();
-            		   //fileSystem.initialize(null, conf2);
+            		   fileSystem = new RawLocalFileSystem();
+            		   fileSystem.initialize(null, conf2);
             	   }
             	   BufferedReader bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(p)));
             	   String line = bufferedReader2.readLine();
