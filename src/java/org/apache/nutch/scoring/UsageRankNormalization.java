@@ -89,18 +89,18 @@ public class UsageRankNormalization {
 //            if (conf == null){
 //                System.exit(-1);
 //            } 
-        	
+            Configuration conf2 = null;
             try {
             	   Path p = new Path(inputFile);
 //            	   Path path = new Path("hdfs://user/cengiz/data/deneme.txt");
 //            	   conf.addResource("/home/hadoop/conf/core-site.xml");
-            	   Configuration conf2 = new Configuration();
+            	   conf2 = new Configuration();
             	   //local setting
             	   //conf.set("fs.default.name", "hdfs://10.6.149.119:8085:9000");
-            	   conf.set("mapred.job.priority", "VERY_HIGH");
+            	   conf2.set("mapred.job.priority", "VERY_HIGH");
             	   //conf.set("hbase.zookeeper.quorum","host-10-6-149-119");
             	   if(!hdfs)
-            		   conf.set("fs.default.name", "file:///");
+            		   conf2.set("fs.default.name", "file:///");
             	   FileSystem fileSystem = FileSystem.get(conf2);
 //            	   FileSystem fileSystem = FileSystem.get(org.apache.hadoop.conf.Configured.getConf());
             	   BufferedReader bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(p)));
@@ -125,11 +125,8 @@ public class UsageRankNormalization {
       	   Path pa = new Path(inputFile);
 //      	   Path path = new Path("hdfs://user/cengiz/data/deneme.txt");
 //      	   conf.addResource("/home/hadoop/conf/core-site.xml");
-      	   Configuration conf2 = new Configuration();
       	   //local setting
       	   //conf2.addResource(new Path("/home/cengiz/hadoop/conf/core-site.xml"));
-     	   if(!hdfs)
-    		   conf2.set("fs.default.name", "file:///");
       	   FileSystem fileSystem = FileSystem.get(conf2);
              BufferedReader bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(pa)));
             while ( (line = bufferedReader2.readLine()) != null){
