@@ -128,6 +128,8 @@ public class UsageRankNormalization {
       	   Configuration conf2 = new Configuration();
       	   //local setting
       	   //conf2.addResource(new Path("/home/cengiz/hadoop/conf/core-site.xml"));
+     	   if(!hdfs)
+    		   conf2.set("fs.default.name", "file:///");
       	   FileSystem fileSystem = FileSystem.get(conf2);
              BufferedReader bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(pa)));
             while ( (line = bufferedReader2.readLine()) != null){
