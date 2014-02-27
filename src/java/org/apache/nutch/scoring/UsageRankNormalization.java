@@ -5,6 +5,7 @@ import org.apache.commons.math.distribution.NormalDistribution;
 import org.apache.commons.math.distribution.NormalDistributionImpl;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.LocalFileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RawLocalFileSystem;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -88,17 +89,18 @@ public class UsageRankNormalization {
             HTable table = new HTable(conf, TABLE_NAME);
             Configuration conf2 = null;
             FileSystem fileSystem = null;
+            LocalFileSystem lfs = null;
             try {
             	   Path p = new Path(inputFile);
             	   conf2 = new Configuration();
             	   conf2.set("mapred.job.priority", "VERY_HIGH");
             	   fileSystem = FileSystem.get(conf2);
             	   if(!hdfs){
-            		   conf2.set("fs.default.name", "file:///");
-            		   fileSystem = new RawLocalFileSystem();
-            		   fileSystem.initialize(null, conf2);
+            		   //conf2.set("fs.default.name", "file:///");
+            		   lfs = FileSystem.getLocal(conf2);
+            		   //fileSystem.initialize(null, conf2);
             	   }
-            	   BufferedReader bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(p)));
+            	   BufferedReader bufferedReader2 = new BufferedReader(new InputStreamReader(lfs.open(p)));
             	   String line = bufferedReader2.readLine();
             	   while (line != null) {
             	    System.out.println(line);
