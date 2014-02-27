@@ -1,20 +1,18 @@
 package org.apache.nutch.scoring;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.math.MathException;
 import org.apache.commons.math.distribution.NormalDistribution;
 import org.apache.commons.math.distribution.NormalDistributionImpl;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
-import org.apache.hadoop.hbase.mapreduce.TableOutputFormat;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.nutch.util.TableUtil;
 
 import java.io.*;
-
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,36 +21,30 @@ import java.io.*;
  * Time: 3:39 PM
  * To change this template use File | Settings | File Templates.
  */
-public class UsageRankNormalization {
 
+public class UsageRankNormalization {
     private static String TABLE_NAME = "host";
 
-    private static Double getMean(Double[] logVals)
-    {
+    private static Double getMean(Double[] logVals){
         Double sum = 0.0;
         for (Double val : logVals){
             sum += val;
         }
-
         return sum / logVals.length;
     }
 
-    private static Double getVariance(Double[] logVals)
-    {
+    private static Double getVariance(Double[] logVals){
         Double mean = getMean(logVals);
         Double sum = 0.0;
-
         for(Double val : logVals){
              sum += (mean - val) * (mean - val);
         }
-
         return sum / logVals.length;
     }
 
     private static int countLine(File file) throws IOException {
-
         int lines = 0;
-        LineNumberReader lineNumberReader = new LineNumberReader( new FileReader(file));
+        LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
         lineNumberReader.skip(Long.MAX_VALUE);
         lines = lineNumberReader.getLineNumber();
         lineNumberReader.close();
@@ -60,22 +52,25 @@ public class UsageRankNormalization {
     }
 
     public static Double stdDev(Double[] logVals){
-
         return Math.sqrt(getVariance(logVals));
     }
 
     public static void normalizeUsageValues(String[] args, int scale){
-    	File inputFile=null;
+    	String inputFile=null;
+    	boolean hdfs = true;
     	for (int i = 0; i < args.length; i++){
         	if (args[i].equals("-f")) {
-        		inputFile = new File(args[i+1]);
+        		inputFile = args[i+1];
+        		hdfs = false;
         	}
         	if(args[i].equals("-p")){
         		TABLE_NAME=args[i+1]+"_"+TABLE_NAME;
         	}    	
+        	if (args[i].equals("-h")) {
+        		inputFile = args[i+1];
+        	}
         }
     	
-        
         BufferedReader bufferedReader = null;
         Double sumOfLog = 0.0d;
         Double logAvg = 0.0d;
@@ -85,41 +80,73 @@ public class UsageRankNormalization {
         String[] hosts;
         Double[] logVals;
         String reversedUrl;
-        
-        try {        	
-            bufferedReader = new BufferedReader(new FileReader(inputFile));
-            String line = null;
+            
+        try {        
+        	@SuppressWarnings("deprecation")
+			Configuration conf = new HBaseConfiguration();
+            HTable table = new HTable(conf, TABLE_NAME);
+            
+//            if (conf == null){
+//                System.exit(-1);
+//            } 
+        	
+            try {
+            	   Path p = new Path(inputFile);
+//            	   Path path = new Path("hdfs://user/cengiz/data/deneme.txt");
+//            	   conf.addResource("/home/hadoop/conf/core-site.xml");
+            	   Configuration conf2 = new Configuration();
+            	   //local setting
+            	   //conf.set("fs.default.name", "hdfs://10.6.149.119:8085:9000");
+            	   conf.set("mapred.job.priority", "VERY_HIGH");
+            	   //conf.set("hbase.zookeeper.quorum","host-10-6-149-119");
+            	   if(!hdfs)
+            		   conf.set("fs.default.name", "file:///");
+            	   FileSystem fileSystem = FileSystem.get(conf2);
+//            	   FileSystem fileSystem = FileSystem.get(org.apache.hadoop.conf.Configured.getConf());
+            	   BufferedReader bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(p)));
+            	   String line = bufferedReader2.readLine();
+            	   //numberOfLines++;
+            	   while (line != null) {
+            	    System.out.println(line);
+            	    line = bufferedReader2.readLine();
+            	    numberOfLines++;
+            	   }
+            	  } catch (IOException e) {
+            	   e.printStackTrace();
+            	  }
+//            bufferedReader = new BufferedReader(new FileReader(inputFile));
+           String line = null;
             //ArrayList<Double> logValList = new ArrayList<Double>();
 
-            numberOfLines = countLine(inputFile);
             hosts = new String[numberOfLines];
             logVals = new Double[numberOfLines];
              int i = 0;
-            while ( (line = bufferedReader.readLine()) != null){
+
+      	   Path pa = new Path(inputFile);
+//      	   Path path = new Path("hdfs://user/cengiz/data/deneme.txt");
+//      	   conf.addResource("/home/hadoop/conf/core-site.xml");
+      	   Configuration conf2 = new Configuration();
+      	   //local setting
+      	   //conf2.addResource(new Path("/home/cengiz/hadoop/conf/core-site.xml"));
+      	   FileSystem fileSystem = FileSystem.get(conf2);
+             BufferedReader bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(pa)));
+            while ( (line = bufferedReader2.readLine()) != null){
                 String[] cols = line.split("\t");
                 Double logValue = Math.log(Integer.parseInt(cols[1]));
                 logVals[i] = logValue;
 //                hosts[i] = reverseHost(cols[0]);
-                reversedUrl = TableUtil.reverseUrl(cols[0]);
+                reversedUrl = TableUtil.reverseUrl("http://" + cols[0]);
                 hosts[i] = TableUtil.getReversedHost(reversedUrl);
                 sumOfLog += logValue;
                 i++;
             }
-
+            
             logAvg = sumOfLog / logVals.length;
             stdDevVal = stdDev(logVals);
 
             if (stdDevVal == 0.0d) {
                 stdDevVal = 1e-10;
             }
-
-            Configuration conf = HBaseConfiguration.create();
-            HTable table = new HTable(conf, TABLE_NAME);
-
-            if (conf == null){
-                System.exit(-1);
-            }
-
 
             for (i = 0; i < hosts.length; i++){
                 NormalDistribution distribution = new NormalDistributionImpl(logAvg, stdDevVal);
@@ -131,7 +158,7 @@ public class UsageRankNormalization {
                 p.add(Bytes.toBytes("mtdt"), Bytes.toBytes("_ur_"), Bytes.toBytes(newValue));
                 table.put(p);
             }
-
+            
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -146,7 +173,6 @@ public class UsageRankNormalization {
                     e.printStackTrace();
                 }
         }
-
     }
     
     /**
@@ -177,16 +203,11 @@ public class UsageRankNormalization {
 //    	return buf.toString();
 //    }
 
-
     public static void main(String[] args){
-
         if (args.length < 1){
             System.err.println("Usage: UsageRankNormalization -f <host_file> -p <output_table_prefix>");
             return;
         }
-
         normalizeUsageValues(args, 10);
-
     }
-
 }
