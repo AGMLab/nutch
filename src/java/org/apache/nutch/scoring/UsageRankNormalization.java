@@ -88,16 +88,17 @@ public class UsageRankNormalization {
             HTable table = new HTable(conf, TABLE_NAME);
             Configuration conf2 = null;
             FileSystem fileSystem = null;
+            BufferedReader bufferedReader2 = null;
             try {
             	   Path p = new Path(inputFile);
             	   conf2 = new Configuration();
             	   conf2.set("mapred.job.priority", "VERY_HIGH");
             	   fileSystem = FileSystem.get(conf2);
+            	   bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(p)));
             	   if(!hdfs){
-            		   conf2.set("fs.default.name", "file:///");
-            		   fileSystem = FileSystem.get(new File("root/cengiz/usagerank.csv").toURI(), conf2);
+            		   bufferedReader2 = new BufferedReader(new FileReader(inputFile));
             	   }
-            	   BufferedReader bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(p)));
+            	   
             	   String line = bufferedReader2.readLine();
             	   while (line != null) {
             	    System.out.println(line);
@@ -116,7 +117,10 @@ public class UsageRankNormalization {
             int i = 0;
 
             Path pa = new Path(inputFile);
-            BufferedReader bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(pa)));
+            bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(pa)));
+            if(!hdfs){
+     		   bufferedReader2 = new BufferedReader(new FileReader(inputFile));
+     	    }
             while ( (line = bufferedReader2.readLine()) != null){
                 String[] cols = line.split("\t");
                 Double logValue = Math.log(Integer.parseInt(cols[1]));
