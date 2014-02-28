@@ -93,9 +93,11 @@ public class UsageRankNormalization {
             	   Path p = new Path(inputFile);
             	   conf2 = new Configuration();
             	   conf2.set("mapred.job.priority", "VERY_HIGH");
-            	   fileSystem = FileSystem.get(conf2);
+            	   //fileSystem = FileSystem.get(conf2);
+            	   fileSystem = FileSystem.get(p.toUri(), conf);
             	   if(!hdfs){
              		   bufferedReader2 = new BufferedReader(new FileReader(inputFile));
+             		   System.out.println("yuriiii " + p.toUri());
              	    } else {
              	    	bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(p)));
              	    }
@@ -126,6 +128,7 @@ public class UsageRankNormalization {
             
             if(!hdfs){
      		   bufferedReader2 = new BufferedReader(new FileReader(inputFile));
+     		   //System.out.println();
      	    } else {
      	    	bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(pa)));
      	    }
