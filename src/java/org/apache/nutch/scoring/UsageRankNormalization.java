@@ -93,13 +93,8 @@ public class UsageRankNormalization {
             	   Path p = new Path(inputFile);
             	   conf2 = new Configuration();
             	   conf2.set("mapred.job.priority", "VERY_HIGH");
-            	   fileSystem = FileSystem.get(conf2);
-            	   
-            	   if(!hdfs){
-            		   bufferedReader2 = new BufferedReader(new FileReader(inputFile));
-            	   } else {
-            		   bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(p)));
-            	   }
+            	   fileSystem = FileSystem.get(p.toUri(), conf2);
+            	   bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(p)));
             	   
             	   String line = bufferedReader2.readLine();
             	   while (line != null) {
