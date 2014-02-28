@@ -94,7 +94,7 @@ public class UsageRankNormalization {
             	   conf2 = new Configuration();
             	   conf2.set("mapred.job.priority", "VERY_HIGH");
             	   //fileSystem = FileSystem.get(conf2);
-            	   fileSystem = FileSystem.get(p.toUri(), conf);
+            	   fileSystem = FileSystem.get(p.toUri(), conf2);
             	   if(!hdfs){
              		   bufferedReader2 = new BufferedReader(new FileReader(inputFile));
              		   System.out.println("yuriiii " + p.toUri());
