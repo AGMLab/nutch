@@ -112,7 +112,12 @@ public class UsageRankNormalization {
             hosts = new String[numberOfLines];
             logVals = new Double[numberOfLines];
             int i = 0;
+            System.out.println("Working Directory = " +
+  	              System.getProperty("user.dir"));
+  		System.out.println(System.getProperty("user.name")); 
 
+  		java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+  		System.out.println("Hostname of local machine: " + localMachine.getHostName());
             Path pa = new Path(inputFile);
             bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(pa)));
             if(!hdfs){
