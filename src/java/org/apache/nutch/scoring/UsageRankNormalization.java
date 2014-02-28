@@ -93,6 +93,7 @@ public class UsageRankNormalization {
             	   Path p = new Path(inputFile);
             	   conf2 = new Configuration();
             	   conf2.set("mapred.job.priority", "VERY_HIGH");
+            	   conf2.set("fs.default.name", "file:///");
             	   //fileSystem = FileSystem.get(conf2);
             	   fileSystem = FileSystem.get(p.toUri(), conf2);
             	   if(!hdfs){
@@ -118,12 +119,13 @@ public class UsageRankNormalization {
             hosts = new String[numberOfLines];
             logVals = new Double[numberOfLines];
             int i = 0;
-            System.out.println("Working Directory = " +
-  	              System.getProperty("user.dir"));
-  		System.out.println(System.getProperty("user.name")); 
+            
+            System.out.println("Working Directory = " + System.getProperty("user.dir"));
+            System.out.println(System.getProperty("user.name")); 
 
-  		java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-  		System.out.println("Hostname of local machine: " + localMachine.getHostName());
+            java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+            System.out.println("Hostname of local machine: " + localMachine.getHostName());
+            
             Path pa = new Path(inputFile);
             
             if(!hdfs){
