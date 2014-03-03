@@ -41,10 +41,13 @@ public class TrustFlagLoader {
         BufferedReader bufferedReader = null;
         Configuration conf = HBaseConfiguration.create();
         HTable table = new HTable(conf, TABLE_NAME);
-
+        System.out.println("a");
         Configuration conf2 = new Configuration();
+        System.out.println("b");
         conf2.set("mapred.job.priority", "VERY_HIGH");
+        System.out.println("c");
         FileSystem fileSystem = null;
+        System.out.println("d");
         BufferedReader bufferedReader2 = null;
         try {
             bufferedReader = new BufferedReader(new FileReader(inputFile));
