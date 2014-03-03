@@ -123,7 +123,7 @@ public class TrustFlagLoader {
         }
         try {
         	System.out.println("zor");
-//            writeHostListToHBase(args);
+            writeHostListToHBase(args);
             System.out.println("cok");
         } catch (IOException e) {
             e.printStackTrace();
