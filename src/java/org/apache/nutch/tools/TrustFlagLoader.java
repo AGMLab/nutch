@@ -3,6 +3,8 @@ package org.apache.nutch.tools;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
@@ -22,14 +24,19 @@ public class TrustFlagLoader {
     private static String TABLE_NAME = "host";
 
     public static void writeHostListToHBase(String[] args) throws IOException {
-        File inputFile = null;
+        String inputFile = null;
+        boolean hdfs = true;
     	for (int i = 0; i < args.length; i++){
         	if (args[i].equals("-f")) {
-        		inputFile = new File(args[i+1]);
+        		inputFile = args[i+1];
+        		hdfs = false;
         	}
         	if(args[i].equals("-p")){
         		TABLE_NAME=args[i+1]+"_"+TABLE_NAME;
         	}    	
+        	if (args[i].equals("-h")) {
+        		inputFile = args[i+1];
+        	}
         }
         BufferedReader bufferedReader = null;
         Configuration conf = HBaseConfiguration.create();
@@ -38,19 +45,29 @@ public class TrustFlagLoader {
         if (conf == null){
             return;
         }
-
+        Configuration conf2 = new Configuration();
+        FileSystem fileSystem = null;
+        BufferedReader bufferedReader2 = null;
         try {
             bufferedReader = new BufferedReader(new FileReader(inputFile));
             String line = null;
             String reversedHost=null;
             String reversedUrl=null;
             String trustFlag="1";
-
-            while ( (line = bufferedReader.readLine()) != null){
+            
+            conf2.set("mapred.job.priority", "VERY_HIGH");
+     	    if(!hdfs){
+     		    conf2.set("fs.default.name", "file:///");
+      	    }
+     	    Path pa = new Path(inputFile);
+     	    fileSystem = FileSystem.get(p.toUri(), conf2);
+ 	        bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(pa)));
+            
+            while ( (line = bufferedReader2.readLine()) != null){
                String[] cols = line.split("\t");
-               reversedUrl = TableUtil.reverseUrl(cols[0]);
+               reversedUrl = TableUtil.reverseUrl("http://" + cols[0]);
                reversedHost = TableUtil.getReversedHost(reversedUrl);
-                Put p = new Put(Bytes.toBytes(reversedHost));
+               Put p = new Put(Bytes.toBytes(reversedHost));
                p.add(Bytes.toBytes("mtdt"), Bytes.toBytes("_tf_"), Bytes.toBytes(trustFlag));
                table.put(p);
             }
