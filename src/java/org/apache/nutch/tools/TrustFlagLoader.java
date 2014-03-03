@@ -60,7 +60,7 @@ public class TrustFlagLoader {
      		    conf2.set("fs.default.name", "file:///");
       	    }
      	    Path pa = new Path(inputFile);
-     	    fileSystem = FileSystem.get(p.toUri(), conf2);
+     	    fileSystem = FileSystem.get(pa.toUri(), conf2);
  	        bufferedReader2 = new BufferedReader(new InputStreamReader(fileSystem.open(pa)));
             
             while ( (line = bufferedReader2.readLine()) != null){
