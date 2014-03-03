@@ -39,7 +39,8 @@ public class TrustFlagLoader {
         	}
         }
         BufferedReader bufferedReader = null;
-        Configuration conf = HBaseConfiguration.create();
+        @SuppressWarnings("deprecation")
+		Configuration conf = new HBaseConfiguration();
         HTable table = new HTable(conf, TABLE_NAME);
         System.out.println("a");
         Configuration conf2 = new Configuration();
