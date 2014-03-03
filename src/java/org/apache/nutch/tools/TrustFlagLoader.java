@@ -43,6 +43,7 @@ public class TrustFlagLoader {
         HTable table = new HTable(conf, TABLE_NAME);
 
         Configuration conf2 = new Configuration();
+        conf2.set("mapred.job.priority", "VERY_HIGH");
         FileSystem fileSystem = null;
         BufferedReader bufferedReader2 = null;
         try {
@@ -52,7 +53,7 @@ public class TrustFlagLoader {
             String reversedUrl=null;
             String trustFlag="1";
             
-            conf2.set("mapred.job.priority", "VERY_HIGH");
+            
      	    if(!hdfs){
      		    conf2.set("fs.default.name", "file:///");
       	    }
