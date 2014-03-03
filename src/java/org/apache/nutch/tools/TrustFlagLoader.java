@@ -42,9 +42,6 @@ public class TrustFlagLoader {
         Configuration conf = HBaseConfiguration.create();
         HTable table = new HTable(conf, TABLE_NAME);
 
-        if (conf == null){
-            return;
-        }
         Configuration conf2 = new Configuration();
         FileSystem fileSystem = null;
         BufferedReader bufferedReader2 = null;
