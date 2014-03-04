@@ -51,7 +51,6 @@ public class TrustFlagLoader {
         System.out.println("d");
         BufferedReader bufferedReader2 = null;
         try {
-            bufferedReader = new BufferedReader(new FileReader(inputFile));
             String line = null;
             String reversedHost=null;
             String reversedUrl=null;
