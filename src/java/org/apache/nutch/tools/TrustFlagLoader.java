@@ -66,7 +66,7 @@ public class TrustFlagLoader {
             
             while ( (line = bufferedReader2.readLine()) != null){
                String[] cols = line.split("\t");
-               reversedUrl = TableUtil.reverseUrl("http://" + cols[0]);
+               reversedUrl = TableUtil.reverseUrl(cols[0]);
                reversedHost = TableUtil.getReversedHost(reversedUrl);
                Put p = new Put(Bytes.toBytes(reversedHost));
                p.add(Bytes.toBytes("mtdt"), Bytes.toBytes("_tf_"), Bytes.toBytes(trustFlag));
